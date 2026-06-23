@@ -1,0 +1,21 @@
+{
+  "details": {
+    "execution_results": [
+      {
+        "error": "No valid CREATE OR REPLACE VIEW/PROCEDURE DDL was provided. The supplied text is only a comment and cannot be executed as an object definition.",
+        "message": "Execution was not performed because the optimized object definition is missing. Provide a concrete CREATE OR REPLACE VIEW or CREATE OR REPLACE PROCEDURE statement for application.",
+        "status": "FAILED",
+        "task_id": "opt-1"
+      }
+    ],
+    "failed_executions": 1,
+    "successful_executions": 0,
+    "total_objects": 1,
+    "warehouse": "COMPUTE_WH"
+  },
+  "execution_id": "exec-2026-06-23T00:00:00Z",
+  "execution_mode": "APPLY",
+  "status": "FAILED",
+  "summary": "APPLY run failed: missing object DDL; no executable CREATE OR REPLACE VIEW/PROCEDURE provided.",
+  "timestamp": "2026-06-23T00:00:00Z"
+}
