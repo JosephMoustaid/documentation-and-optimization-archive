@@ -1,0 +1,13 @@
+[
+  {
+    "error": "No valid CREATE OR REPLACE VIEW/PROCEDURE DDL was provided. The supplied text is only a comment and cannot be executed as an object definition.",
+    "executed_sql": "-- No object definition was provided in the input (`'obje': None`).\n-- There is nothing to optimize.\n-- Please pass a concrete object definition (e.g., CREATE VIEW / CREATE PROCEDURE / SELECT statement)\n-- so that an optimized version can be generated.",
+    "execution_time_ms": null,
+    "message": "Execution was not performed because the optimized object definition is missing. Provide a concrete CREATE OR REPLACE VIEW or CREATE OR REPLACE PROCEDURE statement for application.",
+    "object_type": null,
+    "object_urn": null,
+    "previous_definition": null,
+    "status": "FAILED",
+    "task_id": "opt-1"
+  }
+]
