@@ -1,0 +1,15 @@
+{
+  "object_urn": "HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_EVENT_FUNNEL",
+  "object_type": "VIEW",
+  "latest_execution_id": "exec-2026-06-30T00:00:09Z",
+  "latest_status": "SUCCESS",
+  "latest_execution_time_ms": 145,
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "timestamp": "2026-06-30T00:00:09Z",
+  "artifacts": {
+    "before_sql_path": "executions/exec-2026-06-30T00:00:09Z/objects/HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_EVENT_FUNNEL/before.sql",
+    "after_sql_path": "executions/exec-2026-06-30T00:00:09Z/objects/HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_EVENT_FUNNEL/after.sql",
+    "summary_path": "executions/exec-2026-06-30T00:00:09Z/summary.json"
+  }
+}
