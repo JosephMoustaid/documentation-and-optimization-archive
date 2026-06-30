@@ -1,0 +1,23 @@
+{
+  "execution_id": "exec-2026-06-30T00:00:03Z",
+  "warehouse": "UNKNOWN",
+  "execution_mode": "APPLY",
+  "total_objects": 1,
+  "successful_executions": 0,
+  "failed_executions": 1,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "HAFID_OPTIM_CLONE_1.UNKNOWN.UNKNOWN",
+      "object_type": "VIEW",
+      "previous_definition": null,
+      "status": "FAILED",
+      "execution_time_ms": null,
+      "executed_sql": "-- No valid object definition was provided in 'obje' (value is NULL),\n-- so there is nothing to optimize.\n--\n-- Please re-run with a full CREATE statement for a single object, for example:\n--   {\n--     'obje': 'CREATE OR REPLACE VIEW HAFID_OPTIM_CLONE_1.SCHEMA_X.VW_SOMETHING AS\n--              SELECT ...'\n--   }\n-- or\n--   {\n--     'obje': 'CREATE OR REPLACE PROCEDURE HAFID_OPTIM_CLONE_1.SCHEMA_Y.SP_SOMETHING(...)\n--              RETURNS ...\n--              LANGUAGE SQL\n--              AS $$\n--              ...\n--              $$;'\n--   }\n--\n-- Once a concrete CREATE VIEW / PROCEDURE / FUNCTION statement is supplied,\n-- an optimized version can be generated.",
+      "error": "Provided content is not an executable CREATE OR REPLACE statement; it is only explanatory text with no concrete object DDL, so no Snowflake object can be created or replaced.",
+      "message": "No changes were applied. Please re-run with a full object DDL such as: CREATE OR REPLACE VIEW HAFID_OPTIM_CLONE_1.<schema>.<view_name> AS SELECT ... or CREATE OR REPLACE PROCEDURE HAFID_OPTIM_CLONE_1.<schema>.<procedure_name>(...) ..."
+    }
+  ],
+  "status": "FAILED",
+  "timestamp": "2026-06-30T00:00:03Z"
+}
