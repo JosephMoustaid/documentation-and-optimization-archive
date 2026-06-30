@@ -1,0 +1,10 @@
+{
+  "execution_id": "exec-2026-06-30T00:00:03Z",
+  "timestamp": "2026-06-30T00:00:03Z",
+  "warehouse": "UNKNOWN",
+  "execution_mode": "APPLY",
+  "status": "FAILED",
+  "total_objects": 1,
+  "successful_executions": 0,
+  "failed_executions": 1
+}
