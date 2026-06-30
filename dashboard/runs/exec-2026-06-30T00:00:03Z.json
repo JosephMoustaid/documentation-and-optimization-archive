@@ -1,0 +1,19 @@
+{
+  "execution_id": "exec-2026-06-30T00:00:03Z",
+  "timestamp": "2026-06-30T00:00:03Z",
+  "warehouse": "UNKNOWN",
+  "execution_mode": "APPLY",
+  "status": "FAILED",
+  "total_objects": 1,
+  "successful_executions": 0,
+  "failed_executions": 1,
+  "summary": "Optimization APPLY run failed: provided content was not an executable CREATE OR REPLACE statement (object DDL was NULL). 1 object attempted, 0 succeeded, 1 failed. No changes applied.",
+  "errors": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "HAFID_OPTIM_CLONE_1.UNKNOWN.UNKNOWN",
+      "object_type": "VIEW",
+      "error": "Provided content is not an executable CREATE OR REPLACE statement; it is only explanatory text with no concrete object DDL, so no Snowflake object can be created or replaced."
+    }
+  ]
+}
