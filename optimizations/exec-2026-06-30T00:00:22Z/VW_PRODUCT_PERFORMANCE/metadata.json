@@ -1,0 +1,23 @@
+{
+  "execution_id": "exec-2026-06-30T00:00:22Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "status": "SUCCESS",
+  "timestamp": "2026-06-30T00:00:22Z",
+  "total_objects": 1,
+  "successful_executions": 1,
+  "failed_executions": 0,
+  "task": {
+    "task_id": "opt-1",
+    "object_urn": "HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_PRODUCT_PERFORMANCE",
+    "object_type": "VIEW",
+    "status": "SUCCESS",
+    "execution_time_ms": 155,
+    "message": "Optimized view HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_PRODUCT_PERFORMANCE successfully created or replaced using the provided definition.",
+    "error": ""
+  },
+  "artifacts": {
+    "executed_sql_path": "optimizations/exec-2026-06-30T00:00:22Z/VW_PRODUCT_PERFORMANCE/executed_sql.sql",
+    "previous_definition_path": "optimizations/exec-2026-06-30T00:00:22Z/VW_PRODUCT_PERFORMANCE/previous_definition.sql"
+  }
+}
