@@ -1,6 +1,6 @@
 {
-  "latest_execution_id": "exec-2026-06-30T00:00:02Z",
-  "path": "executions/exec-2026-06-30T00:00:02Z/",
-  "status": "FAILED",
-  "timestamp": "2026-06-30T00:00:02Z"
+  "execution_id": "exec-2026-06-30T00:00:07Z",
+  "status": "SUCCESS",
+  "timestamp": "2026-06-30T00:00:07Z",
+  "path": "executions/exec-2026-06-30T00:00:07Z/"
 }
