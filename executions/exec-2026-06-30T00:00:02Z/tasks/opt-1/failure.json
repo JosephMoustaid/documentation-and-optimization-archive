@@ -1,0 +1,10 @@
+{
+  "task_id": "opt-1",
+  "object_urn": "HAFID_OPTIM_CLONE_1.UNKNOWN.UNKNOWN",
+  "object_type": "VIEW",
+  "status": "FAILED",
+  "previous_definition": null,
+  "execution_time_ms": null,
+  "error": "Optimized DDL is not a valid CREATE OR REPLACE statement. The provided content is explanatory text with no concrete object DDL, so no Snowflake object can be created or replaced.",
+  "message": "Execution not performed because the supplied SQL is only guidance text, not an executable CREATE OR REPLACE VIEW/PROCEDURE/FUNCTION statement. Please re-run with a full object definition such as: CREATE OR REPLACE VIEW HAFID_OPTIM_CLONE_1.<schema>.<view_name> AS SELECT ... or CREATE OR REPLACE PROCEDURE HAFID_OPTIM_CLONE_1.<schema>.<procedure_name>(...) ..."
+}
