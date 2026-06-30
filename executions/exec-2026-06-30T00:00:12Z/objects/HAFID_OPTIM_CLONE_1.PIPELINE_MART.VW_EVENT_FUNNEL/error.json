@@ -1,0 +1,12 @@
+{
+  "execution_id": "exec-2026-06-30T00:00:12Z",
+  "task_id": "opt-1",
+  "object_urn": "HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_EVENT_FUNNEL",
+  "object_type": "VIEW",
+  "status": "FAILED",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "timestamp": "2026-06-30T00:00:12Z",
+  "error": "SQL compilation error: error line 17 at position 37 'BASE_EVENTS.EVENT_TYPE_LOWER' in select clause is neither an aggregate nor in the group by clause.",
+  "message": "The optimized definition for HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_EVENT_FUNNEL could not be applied because the CREATE OR REPLACE VIEW statement failed compilation. EVENT_TYPE_LOWER is referenced in the SELECT list but not included in the GROUP BY or wrapped in an aggregate. Please adjust the grouping or remove non-aggregated columns and retry."
+}
