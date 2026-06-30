@@ -1,0 +1,13 @@
+{
+  "execution_id": "exec-2026-06-30T00:00:02Z",
+  "artifacts": [
+    "executions/exec-2026-06-30T00:00:02Z/summary.json",
+    "executions/exec-2026-06-30T00:00:02Z/results.json",
+    "executions/exec-2026-06-30T00:00:02Z/index.json",
+    "executions/exec-2026-06-30T00:00:02Z/FAILED.md",
+    "executions/exec-2026-06-30T00:00:02Z/README.md",
+    "executions/exec-2026-06-30T00:00:02Z/tasks/opt-1/failure.json",
+    "executions/exec-2026-06-30T00:00:02Z/tasks/opt-1/executed_sql.sql",
+    "executions/latest.json"
+  ]
+}
