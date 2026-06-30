@@ -1,0 +1,20 @@
+-- No valid object definition was provided in 'obje' (value is NULL),
+-- so there is nothing to optimize.
+--
+-- Please re-run with a full CREATE statement for a single object, for example:
+--   {
+--     'obje': 'CREATE OR REPLACE VIEW HAFID_OPTIM_CLONE_1.SCHEMA_X.VW_SOMETHING AS
+--              SELECT ...'
+--   }
+-- or
+--   {
+--     'obje': 'CREATE OR REPLACE PROCEDURE HAFID_OPTIM_CLONE_1.SCHEMA_Y.SP_SOMETHING(...)
+--              RETURNS ...
+--              LANGUAGE SQL
+--              AS $$
+--              ...
+--              $$;'
+--   }
+--
+-- Once a concrete CREATE VIEW / PROCEDURE / FUNCTION statement is supplied,
+-- an optimized version can be generated.
