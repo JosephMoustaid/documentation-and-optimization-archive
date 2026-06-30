@@ -1,0 +1,23 @@
+{
+  "execution_id": "exec-2026-06-30T00:00:01Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "total_objects": 1,
+  "successful_executions": 0,
+  "failed_executions": 1,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "HEALTHCARE_STUDYCASE_DEV.UNKNOWN.UNKNOWN",
+      "object_type": "VIEW",
+      "previous_definition": null,
+      "status": "FAILED",
+      "execution_time_ms": null,
+      "executed_sql": "-- No valid object definition was provided in 'obje' (value is NULL),\n-- and metadata discovery for database HEALTHCARE_STUDYCASE_DEV / warehouse ADF_WH failed.\n-- Without a concrete CREATE VIEW / CREATE PROCEDURE / CREATE FUNCTION statement,\n-- there is nothing to optimize.\n\n-- Please re-run with a full object definition, for example:\n--   {\n--     'obje': \"CREATE OR REPLACE VIEW HEALTHCARE_STUDYCASE_DEV.SCHEMA_X.VW_PATIENTS AS\n--              SELECT ...\"\n--   }\n-- or\n--   {\n--     'obje': \"CREATE OR REPLACE PROCEDURE HEALTHCARE_STUDYCASE_DEV.SCHEMA_Y.SP_PROCESS_CLAIMS(...)\n--              RETURNS ...\n--              LANGUAGE SQL\n--              AS $$\n--              ...\n--              $$;\"\n--   }\n\n-- Once a concrete DDL statement is supplied, an optimized version can be generated.",
+      "error": "Optimized DDL is not a valid CREATE OR REPLACE statement. No concrete object definition was provided, so no Snowflake object can be created or replaced.",
+      "message": "Execution not performed because the provided SQL is only explanatory text, not an executable CREATE OR REPLACE VIEW/PROCEDURE/FUNCTION statement. Please re-run with a full object DDL, such as: CREATE OR REPLACE VIEW HEALTHCARE_STUDYCASE_DEV.<schema>.<object_name> AS SELECT ... or CREATE OR REPLACE PROCEDURE HEALTHCARE_STUDYCASE_DEV.<schema>.<procedure_name>(...) ..."
+    }
+  ],
+  "status": "FAILED",
+  "timestamp": "2026-06-30T00:00:01Z"
+}
