@@ -1,0 +1,25 @@
+{
+  "execution_id": "exec-2026-06-30T00:00:07Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "status": "SUCCESS",
+  "timestamp": "2026-06-30T00:00:07Z",
+  "totals": {
+    "total_objects": 1,
+    "successful_executions": 1,
+    "failed_executions": 0
+  },
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_CUSTOMER_SEGMENTATION",
+      "object_type": "VIEW",
+      "previous_definition": null,
+      "status": "SUCCESS",
+      "execution_time_ms": 140,
+      "executed_sql": "CREATE OR REPLACE VIEW HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_CUSTOMER_SEGMENTATION AS\nWITH customer_sales AS (\n    SELECT\n        fs.CUSTOMER_ID,\n        fs.CUSTOMER_REGION,\n        fs.CUSTOMER_TIER,\n        COUNT(*)                           AS TOTAL_ORDERS,\n        SUM(fs.NET_AMOUNT)                 AS LIFETIME_VALUE,\n        MAX(fs.ORDER_DATE)                 AS LAST_ORDER_DATE,\n        MIN(fs.ORDER_DATE)                 AS FIRST_ORDER_DATE,\n        DATEDIFF('day',\n                 MIN(fs.ORDER_DATE),\n                 MAX(fs.ORDER_DATE))       AS CUSTOMER_TENURE_DAYS\n    FROM HAFID_OPTIM_CLONE_1.PIPELINE_DWH.FACT_SALES fs\n    WHERE fs.STATUS IN ('completed', 'shipped', 'delivered', 'processing')\n    GROUP BY\n        fs.CUSTOMER_ID,\n        fs.CUSTOMER_REGION,\n        fs.CUSTOMER_TIER\n)\nSELECT\n    CUSTOMER_ID,\n    CUSTOMER_REGION,\n    CUSTOMER_TIER,\n    TOTAL_ORDERS,\n    LIFETIME_VALUE,\n    LAST_ORDER_DATE,\n    FIRST_ORDER_DATE,\n    CUSTOMER_TENURE_DAYS\nFROM customer_sales",
+      "error": "",
+      "message": "Optimized view HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_CUSTOMER_SEGMENTATION successfully created or replaced using the provided definition."
+    }
+  ]
+}
