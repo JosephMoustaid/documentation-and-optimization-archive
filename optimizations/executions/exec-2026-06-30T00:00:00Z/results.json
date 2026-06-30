@@ -1,0 +1,26 @@
+{
+  "execution_id": "exec-2026-06-30T00:00:00Z",
+  "warehouse": "COMPUTE_WH",
+  "execution_mode": "APPLY",
+  "status": "FAILED",
+  "timestamp": "2026-06-30T00:00:00Z",
+  "summary": {
+    "total_objects": 1,
+    "successful_executions": 0,
+    "failed_executions": 1
+  },
+  "failure_reason": "No concrete object definition provided; executed_sql was explanatory text, not executable CREATE OR REPLACE.",
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "UNKNOWN.UNKNOWN.UNKNOWN",
+      "object_type": "VIEW",
+      "previous_definition": null,
+      "status": "FAILED",
+      "execution_time_ms": null,
+      "executed_sql": "-- No object definition was provided in 'obje', and metadata discovery failed, so\n-- there is nothing concrete to optimize. Please re-run with a valid object\n-- definition (e.g., the CREATE VIEW / CREATE PROCEDURE statement) in 'obje'.\n\n-- Example of expected input structure:\n-- {\n--   'obje': \"CREATE OR REPLACE VIEW schema.view_name AS SELECT ...\"\n-- }\n\n-- Once the object text is supplied, an optimized version can be generated.",
+      "error": "Optimized DDL is not a valid CREATE OR REPLACE statement. No concrete object definition was provided, so no Snowflake object can be created or replaced.",
+      "message": "Execution skipped because the provided SQL is explanatory text, not an executable CREATE OR REPLACE statement. Please supply a full object definition, such as: CREATE OR REPLACE VIEW <db>.<schema>.<view_name> AS SELECT ..."
+    }
+  ]
+}
