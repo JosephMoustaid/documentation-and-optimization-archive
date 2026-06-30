@@ -1,0 +1,22 @@
+{
+  "execution_id": "exec-2026-06-30T00:00:00Z",
+  "timestamp": "2026-06-30T00:00:00Z",
+  "warehouse": "COMPUTE_WH",
+  "execution_mode": "APPLY",
+  "status": "FAILED",
+  "counts": {
+    "total_objects": 1,
+    "successful_executions": 0,
+    "failed_executions": 1
+  },
+  "high_level_failure": "Missing object definition; cannot generate executable CREATE OR REPLACE statement.",
+  "tasks": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "UNKNOWN.UNKNOWN.UNKNOWN",
+      "object_type": "VIEW",
+      "status": "FAILED",
+      "error": "Optimized DDL is not a valid CREATE OR REPLACE statement. No concrete object definition was provided, so no Snowflake object can be created or replaced."
+    }
+  ]
+}
