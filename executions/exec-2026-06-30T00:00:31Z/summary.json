@@ -1,0 +1,20 @@
+{
+  "execution_id": "exec-2026-06-30T00:00:31Z",
+  "timestamp": "2026-06-30T00:00:31Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "status": "FAILED",
+  "total_objects": 1,
+  "successful_executions": 0,
+  "failed_executions": 1,
+  "results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_INVENTORY_HEALTH",
+      "object_type": "VIEW",
+      "status": "FAILED",
+      "error": "SQL compilation error: Object 'HAFID_OPTIM_CLONE_1.PIPELINE_MART.SALES_VELOCITY' does not exist or not authorized.",
+      "blocking_dependency": "HAFID_OPTIM_CLONE_1.PIPELINE_MART.SALES_VELOCITY"
+    }
+  ]
+}
