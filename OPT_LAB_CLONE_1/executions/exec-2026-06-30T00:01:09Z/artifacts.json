@@ -1,0 +1,15 @@
+{
+  "execution_id": "exec-2026-06-30T00:01:09Z",
+  "status": "FAILED",
+  "note": "Execution not performed; artifacts provided for manual run.",
+  "objects": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_1.RETAIL.V_TOP_CUSTOMERS",
+      "object_type": "VIEW",
+      "status": "FAILED",
+      "manual_sql_file": "manual_apply.sql",
+      "error": "Execution not performed in this run context; no Snowflake execution result is available."
+    }
+  ]
+}
