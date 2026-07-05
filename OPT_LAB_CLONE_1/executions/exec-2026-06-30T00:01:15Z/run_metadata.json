@@ -1,0 +1,9 @@
+{
+  "database": "OPT_LAB_CLONE_1",
+  "schema": "ALL",
+  "warehouse": "ADF_WH",
+  "execution_id": "exec-2026-06-30T00:01:15Z",
+  "timestamp": "2026-06-30T00:01:15Z",
+  "status": "FAILED",
+  "execution_mode": "APPLY"
+}
