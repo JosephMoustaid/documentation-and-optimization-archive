@@ -1,0 +1,28 @@
+{
+  "execution_id": "exec-2026-06-30T00:01:30Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "total_objects": 1,
+  "successful_executions": 1,
+  "failed_executions": 0,
+  "status": "SUCCESS",
+  "timestamp": "2026-06-30T00:01:30Z",
+  "metadata": {
+    "database": "OPT_LAB_CLONE_1",
+    "schema": "ALL",
+    "warehouse": "ADF_WH"
+  },
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_1.RETAIL.V_DAILY_SALES",
+      "object_type": "VIEW",
+      "previous_definition": "CREATE OR REPLACE VIEW OPT_LAB_CLONE_1.RETAIL.V_DAILY_SALES AS\nSELECT\n d1.order_date,\n SUM(d1.order_total) AS daily_total,\n (SELECT SUM(d2.order_total)\n FROM orders d2\n WHERE d2.order_date <= d1.order_date) AS running_total\nFROM orders d1\nGROUP BY d1.order_date;",
+      "status": "SUCCESS",
+      "execution_time_ms": 150,
+      "executed_sql": "CREATE OR REPLACE VIEW OPT_LAB_CLONE_1.RETAIL.V_DAILY_SALES AS\n/*\n  Optimizations (behavior-preserving):\n  - Fully qualified table reference to avoid reliance on session database/schema.\n  - Introduced a CTE to pre-aggregate daily totals, reducing repeated aggregation work.\n  - Replaced the per-row correlated subquery with a window function to compute the\n    running total, which is typically more efficient and easier for the optimizer\n    to execute.\n  - Preserved all output columns, data types, ordering (none explicitly defined),\n    filters, and null-handling semantics.\n*/\nWITH daily_agg AS (\n    SELECT\n        d1.order_date,\n        SUM(d1.order_total) AS daily_total\n    FROM OPT_LAB_CLONE_1.RETAIL.ORDERS d1\n    GROUP BY d1.order_date\n)\nSELECT\n    da.order_date,\n    da.daily_total,\n    /*\n      EXACT semantic equivalence to:\n        (SELECT SUM(d2.order_total)\n         FROM orders d2\n         WHERE d2.order_date <= d1.order_date)\n\n      Explanation:\n      - The original correlated subquery sums order_total for all rows with\n        order_date <= current row's order_date.\n      - We first aggregate by order_date, then apply a running SUM over\n        the ordered dates. For any given order_date, the running total is\n        the sum of all daily_totals for dates <= that date, which matches\n        the original condition.\n    */\n    SUM(da.daily_total) OVER (\n        ORDER BY da.order_date\n        ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW\n    ) AS running_total\nFROM daily_agg AS da;",
+      "error": "",
+      "message": "Optimized view OPT_LAB_CLONE_1.RETAIL.V_DAILY_SALES successfully created or replaced using the provided definition."
+    }
+  ]
+}
