@@ -1,0 +1,34 @@
+{
+  "execution_id": "exec-2026-06-30T00:01:13Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "total_objects": 0,
+  "successful_executions": 0,
+  "failed_executions": 1,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_1.RETAIL.V_PRODUCT_SALES",
+      "object_type": "VIEW",
+      "previous_definition": null,
+      "status": "FAILED",
+      "execution_time_ms": null,
+      "executed_sql": "CREATE OR REPLACE VIEW OPT_LAB_CLONE_1.RETAIL.V_PRODUCT_SALES AS\n/*\n  Optimizations (behavior-preserving):\n  - Fully qualified all base tables to ensure stable name resolution and\n    avoid dependency on the current database/schema search path.\n  - Retained DISTINCT in the SELECT list to preserve exact row cardinality\n    and behavior in case of any hidden duplicates from joins.\n  - Added explicit aliases for readability; no functional changes.\n*/\nSELECT DISTINCT\n    p.product_id,\n    p.product_name,\n    p.category,\n    o.order_id,\n    o.order_date,\n    oi.quantity,\n    oi.unit_price,\n    oi.quantity * oi.unit_price AS line_total\nFROM OPT_LAB_CLONE_1.RETAIL.PRODUCTS      AS p\nJOIN OPT_LAB_CLONE_1.RETAIL.ORDER_ITEMS   AS oi\n    ON oi.product_id = p.product_id\nJOIN OPT_LAB_CLONE_1.RETAIL.ORDERS        AS o\n    ON o.order_id = oi.order_id\nJOIN OPT_LAB_CLONE_1.RETAIL.CUSTOMERS     AS c\n    ON c.customer_id = o.customer_id;",
+      "error": "Execution not performed in this run context; no Snowflake execution result is available.",
+      "message": "The optimized definition for OPT_LAB_CLONE_1.RETAIL.V_PRODUCT_SALES was received but not executed in this environment. Please run the provided CREATE OR REPLACE VIEW statement in your Snowflake account to apply the optimization."
+    }
+  ],
+  "status": "FAILED",
+  "timestamp": "2026-06-30T00:01:13Z",
+  "metadata": {
+    "database": "OPT_LAB_CLONE_1",
+    "schema": "ALL",
+    "warehouse": "ADF_WH"
+  },
+  "related_prior_run": {
+    "execution_id": "exec-2026-06-30T00:01:11Z",
+    "object_urn": "OPT_LAB_CLONE_1.RETAIL.V_SUPPLIER_PERFORMANCE",
+    "status": "FAILED",
+    "failure_reason": "Execution not performed in this run context; no Snowflake execution result is available."
+  }
+}
