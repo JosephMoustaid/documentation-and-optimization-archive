@@ -1,0 +1,10 @@
+{
+  "task_id": "opt-1",
+  "object_urn": "HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_EVENT_FUNNEL",
+  "object_type": "VIEW",
+  "status": "FAILED",
+  "previous_definition": null,
+  "execution_time_ms": null,
+  "error": "Execution not performed in this run context; no Snowflake execution result is available.",
+  "message": "The optimized definition for HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_EVENT_FUNNEL was received but not executed in this environment. Please run the provided CREATE OR REPLACE VIEW statement in your Snowflake account to apply the optimization."
+}
