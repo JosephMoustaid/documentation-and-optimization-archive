@@ -1,0 +1,28 @@
+{
+  "execution_id": "exec-2026-06-30T00:01:24Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "total_objects": 1,
+  "successful_executions": 1,
+  "failed_executions": 0,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_1.RETAIL.V_RECENT_ACTIVE_CATALOG",
+      "object_type": "VIEW",
+      "previous_definition": "CREATE OR REPLACE VIEW OPT_LAB_CLONE_1.RETAIL.V_RECENT_ACTIVE_CATALOG AS\nSELECT\n p.product_id,\n p.product_name,\n p.category,\n p.unit_price\nFROM products p\nJOIN inventory i ON i.product_id = p.product_id\nWHERE UPPER(p.category) = 'ELECTRONICS' -- function on column\n AND YEAR(i.last_restocked) = YEAR(CURRENT_DATE) -- function on column\n AND p.active_flag = TRUE;",
+      "status": "SUCCESS",
+      "execution_time_ms": 150,
+      "executed_sql": "CREATE OR REPLACE VIEW OPT_LAB_CLONE_1.RETAIL.V_RECENT_ACTIVE_CATALOG AS\n/*\n  Optimizations (behavior-preserving):\n  - Fully qualified table references to avoid dependency on current schema search path.\n  - Added explicit table aliases for clarity and maintainability.\n  - Preserved UPPER() on category and YEAR() on last_restocked to ensure identical filtering semantics.\n  - Kept boolean predicate form (p.active_flag = TRUE) to match original behavior exactly.\n*/\nSELECT\n    p.product_id,\n    p.product_name,\n    p.category,\n    p.unit_price\nFROM OPT_LAB_CLONE_1.RETAIL.PRODUCTS   AS p\nJOIN OPT_LAB_CLONE_1.RETAIL.INVENTORY  AS i\n    ON i.product_id = p.product_id\nWHERE UPPER(p.category) = 'ELECTRONICS'                -- function on column (preserved)\n  AND YEAR(i.last_restocked) = YEAR(CURRENT_DATE)      -- function on column (preserved)\n  AND p.active_flag = TRUE;",
+      "error": "",
+      "message": "Optimized view OPT_LAB_CLONE_1.RETAIL.V_RECENT_ACTIVE_CATALOG successfully created or replaced using the provided definition."
+    }
+  ],
+  "status": "SUCCESS",
+  "timestamp": "2026-06-30T00:01:24Z",
+  "metadata": {
+    "database": "OPT_LAB_CLONE_1",
+    "schema": "ALL",
+    "warehouse": "ADF_WH"
+  }
+}
