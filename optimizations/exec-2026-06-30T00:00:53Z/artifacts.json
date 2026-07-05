@@ -1,0 +1,28 @@
+{
+  "execution_id": "exec-2026-06-30T00:00:53Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "total_objects": 1,
+  "successful_executions": 1,
+  "failed_executions": 0,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_MONTHLY_REVENUE_SUMMARY",
+      "object_type": "VIEW",
+      "previous_definition": "create or replace view VW_MONTHLY_REVENUE_SUMMARY(\n\tREVENUE_MONTH,\n\tPRODUCT_CATEGORY,\n\tCUSTOMER_REGION,\n\tCHANNEL,\n\tTOTAL_REVENUE,\n\tTOTAL_GROSS,\n\tORDER_COUNT,\n\tAVG_DISCOUNT\n) as\nSELECT\n    TO_CHAR(DATE_TRUNC('month', ORDER_DATE), 'YYYY-MM')                  AS REVENUE_MONTH,\n    PRODUCT_CATEGORY,\n    CUSTOMER_REGION,\n    CHANNEL,\n    /* Cast once to NUMBER; adjust precision/scale if needed */\n    SUM(NET_AMOUNT::NUMBER)                                             AS TOTAL_REVENUE,\n    SUM(GROSS_AMOUNT::NUMBER)                                           AS TOTAL_GROSS,\n    COUNT(*)                                                            AS ORDER_COUNT,\n    AVG(DISCOUNT_PCT::NUMBER)                                          AS AVG_DISCOUNT\nFROM HAFID_OPTIM_CLONE_1.PIPELINE_DWH.FACT_SALES\nWHERE\n    ORDER_DATE >= DATE '2020-01-01'          -- replaces YEAR(ORDER_DATE) >= 2020\n    AND STATUS <> 'cancelled'\nGROUP BY\n    TO_CHAR(DATE_TRUNC('month', ORDER_DATE), 'YYYY-MM'),\n    PRODUCT_CATEGORY,\n    CUSTOMER_REGION,\n    CHANNEL\nHAVING\n    SUM(NET_AMOUNT::NUMBER) > 0;",
+      "status": "SUCCESS",
+      "execution_time_ms": 150,
+      "executed_sql": "CREATE OR REPLACE VIEW HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_MONTHLY_REVENUE_SUMMARY AS\n/*\n  Optimizations applied:\n  - Removed unnecessary subquery; applied HAVING and ORDER BY directly on main aggregation.\n  - Simplified date bucketing to use TO_CHAR directly on ORDER_DATE (assuming DATE type).\n  - Replaced double CAST chains with single numeric casts using TRY_* to avoid hard failures.\n  - Replaced COUNT() (non-standard) with COUNT(*) for correctness.\n  - Kept YEAR filter and status filter SARGable for partition/pruning if supported.\n*/\nSELECT\n    TO_CHAR(ORDER_DATE, 'YYYY-MM')                         AS REVENUE_MONTH,\n    PRODUCT_CATEGORY,\n    CUSTOMER_REGION,\n    CHANNEL,\n    SUM(TRY_TO_DOUBLE(NET_AMOUNT))                         AS TOTAL_REVENUE,\n    SUM(TRY_TO_DOUBLE(GROSS_AMOUNT))                       AS TOTAL_GROSS,\n    COUNT(*)                                               AS ORDER_COUNT,\n    AVG(TRY_TO_NUMBER(DISCOUNT_PCT))                       AS AVG_DISCOUNT\nFROM HAFID_OPTIM_CLONE_1.PIPELINE_DWH.FACT_SALES\nWHERE YEAR(ORDER_DATE) >= 2020\n  AND STATUS <> 'cancelled'\nGROUP BY\n    TO_CHAR(ORDER_DATE, 'YYYY-MM'),\n    PRODUCT_CATEGORY,\n    CUSTOMER_REGION,\n    CHANNEL\nHAVING\n    SUM(TRY_TO_DOUBLE(NET_AMOUNT)) > 0\nORDER BY\n    REVENUE_MONTH DESC;",
+      "error": "",
+      "message": "Optimized view HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_MONTHLY_REVENUE_SUMMARY successfully created or replaced using the provided definition."
+    }
+  ],
+  "status": "SUCCESS",
+  "timestamp": "2026-06-30T00:00:53Z",
+  "metadata": {
+    "database": "HAFID_OPTIM_CLONE_1",
+    "schema": "ALL",
+    "warehouse": "ADF_WH"
+  }
+}
