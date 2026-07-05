@@ -1,0 +1,28 @@
+{
+  "execution_id": "exec-2026-06-30T00:01:19Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "total_objects": 1,
+  "successful_executions": 1,
+  "failed_executions": 0,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_1.RETAIL.V_TOP_CUSTOMERS",
+      "object_type": "VIEW",
+      "previous_definition": null,
+      "status": "SUCCESS",
+      "execution_time_ms": 150,
+      "executed_sql": "CREATE OR REPLACE VIEW OPT_LAB_CLONE_1.RETAIL.V_TOP_CUSTOMERS AS\n/*\n  Optimizations (behavior-preserving):\n  - Fully qualified references for both base view and orders table to avoid dependency on current schema.\n  - Replaced scalar correlated subquery with a LEFT JOIN + grouped aggregation to allow better optimization\n    (while preserving exact semantics, including NULL behavior when no matching orders exist).\n  - Preserved ORDER BY clause in the view definition to maintain original ordering behavior.\n*/\nSELECT\n    s.customer_id,\n    s.first_name,\n    s.last_name,\n    s.total_spent,\n    /*\n      Original expression:\n      (SELECT COUNT() FROM orders o\n       WHERE o.customer_id = s.customer_id\n         AND o.status = 'RETURNED') AS returned_orders\n\n      New expression:\n      COALESCE(SUM(o.is_returned), 0) AS returned_orders\n\n      Implementation details:\n      - We join to the ORDERS table and compute a derived column is_returned\n        that is 1 when status = 'RETURNED', else 0.\n      - SUM(is_returned) over the joined rows equals COUNT(*) with the same predicate.\n      - LEFT JOIN + COALESCE ensures 0 when there are no matching orders, matching COUNT() behavior.\n    */\n    COALESCE(SUM(o.is_returned), 0) AS returned_orders\nFROM OPT_LAB_CLONE_1.RETAIL.V_CUSTOMER_ORDER_SUMMARY AS s\nLEFT JOIN (\n    SELECT\n        o.customer_id,\n        /*\n          Using a CASE expression to derive a numeric flag for returned orders.\n          This is semantically equivalent to filtering by status = 'RETURNED'\n          in the original correlated subquery, when used with SUM.\n        */\n        CASE WHEN o.status = 'RETURNED' THEN 1 ELSE 0 END AS is_returned\n    FROM OPT_LAB_CLONE_1.RETAIL.ORDERS AS o\n) AS o\n    ON o.customer_id = s.customer_id\nWHERE s.total_spent > 0\nGROUP BY\n    s.customer_id,\n    s.first_name,\n    s.last_name,\n    s.total_spent\nORDER BY\n    s.total_spent DESC;",
+      "error": "",
+      "message": "Optimized view OPT_LAB_CLONE_1.RETAIL.V_TOP_CUSTOMERS successfully created or replaced using the provided definition."
+    }
+  ],
+  "status": "SUCCESS",
+  "timestamp": "2026-06-30T00:01:19Z",
+  "metadata": {
+    "database": "OPT_LAB_CLONE_1",
+    "schema": "ALL",
+    "warehouse": "ADF_WH"
+  }
+}
