@@ -1,0 +1,11 @@
+{
+  "task_id": "opt-1",
+  "object_urn": "OPT_LAB_CLONE_1.RETAIL.V_PRODUCT_SALES",
+  "object_type": "VIEW",
+  "previous_definition": null,
+  "status": "FAILED",
+  "execution_time_ms": null,
+  "executed_sql": "CREATE OR REPLACE VIEW OPT_LAB_CLONE_1.RETAIL.V_PRODUCT_SALES AS\n/*\n  Optimization notes (behavior-preserving):\n  - Kept DISTINCT to preserve exact output semantics in case of upstream duplicates.\n  - Standardized join and column aliasing for readability and maintainability.\n  - Kept explicit line_total expression to avoid any change in numeric behavior.\n*/\nSELECT DISTINCT\n    p.product_id,\n    p.product_name,\n    p.category,\n    o.order_id,\n    o.order_date,\n    oi.quantity,\n    oi.unit_price,\n    oi.quantity * oi.unit_price AS line_total\nFROM products      AS p\nJOIN order_items   AS oi\n    ON oi.product_id = p.product_id\nJOIN orders        AS o\n    ON o.order_id = oi.order_id\nJOIN customers     AS c\n    ON c.customer_id = o.customer_id;",
+  "error": "Execution not performed in this run context; no Snowflake execution result is available.",
+  "message": "The optimized definition for OPT_LAB_CLONE_1.RETAIL.V_PRODUCT_SALES was received but not executed in this environment. Please run the provided CREATE OR REPLACE VIEW statement in your Snowflake account to apply the optimization."
+}
