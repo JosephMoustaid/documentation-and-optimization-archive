@@ -1,0 +1,28 @@
+{
+  "execution_id": "exec-2026-06-30T00:01:27Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "total_objects": 1,
+  "successful_executions": 1,
+  "failed_executions": 0,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_1.RETAIL.V_ORDER_DETAILS",
+      "object_type": "VIEW",
+      "previous_definition": "CREATE OR REPLACE VIEW OPT_LAB_CLONE_1.RETAIL.V_ORDER_DETAILS AS\nSELECT\n o.order_id,\n o.order_date,\n o.status,\n c., -- pulls every customer column\n oi.product_id,\n oi.quantity,\n oi.unit_price,\n p.product_name,\n p.category,\n pay.amount AS payment_amount,\n pay.method AS payment_method,\n pay.status AS payment_status\nFROM orders o\nJOIN customers c ON c.customer_id = o.customer_id\nJOIN order_items oi ON oi.order_id = o.order_id\nJOIN products p ON p.product_id = oi.product_id\nLEFT JOIN payments pay ON pay.order_id = o.order_id;",
+      "status": "SUCCESS",
+      "execution_time_ms": 150,
+      "executed_sql": "CREATE OR REPLACE VIEW OPT_LAB_CLONE_1.RETAIL.V_ORDER_DETAILS AS\n/* \n  Optimizations (behavior-preserving):\n  - Fully qualified table references to avoid reliance on session database/schema.\n  - Preserved c.* in the projection to keep the exact original output schema and\n    column ordering for customer fields.\n  - Join types and predicates are identical to the original definition:\n      * INNER JOINs: ORDERS ↔ CUSTOMERS, ORDERS ↔ ORDER_ITEMS, ORDER_ITEMS ↔ PRODUCTS\n      * LEFT JOIN:  ORDERS ↔ PAYMENTS\n  - No filters or expressions were added or removed; behavior, row counts, and\n    null-handling semantics remain unchanged.\n*/\nSELECT\n    o.order_id,\n    o.order_date,\n    o.status,\n    c.*,  -- pulls every customer column\n    oi.product_id,\n    oi.quantity,\n    oi.unit_price,\n    p.product_name,\n    p.category,\n    pay.amount AS payment_amount,\n    pay.method AS payment_method,\n    pay.status AS payment_status\nFROM OPT_LAB_CLONE_1.RETAIL.ORDERS        AS o\nJOIN OPT_LAB_CLONE_1.RETAIL.CUSTOMERS     AS c\n    ON c.customer_id = o.customer_id\nJOIN OPT_LAB_CLONE_1.RETAIL.ORDER_ITEMS   AS oi\n    ON oi.order_id = o.order_id\nJOIN OPT_LAB_CLONE_1.RETAIL.PRODUCTS      AS p\n    ON p.product_id = oi.product_id\nLEFT JOIN OPT_LAB_CLONE_1.RETAIL.PAYMENTS AS pay\n    ON pay.order_id = o.order_id;",
+      "error": "",
+      "message": "Optimized view OPT_LAB_CLONE_1.RETAIL.V_ORDER_DETAILS successfully created or replaced using the provided definition."
+    }
+  ],
+  "status": "SUCCESS",
+  "timestamp": "2026-06-30T00:01:27Z",
+  "metadata": {
+    "database": "OPT_LAB_CLONE_1",
+    "schema": "ALL",
+    "warehouse": "ADF_WH"
+  }
+}
