@@ -1,0 +1,28 @@
+{
+  "execution_id": "exec-2026-06-30T00:01:07Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "total_objects": 0,
+  "successful_executions": 0,
+  "failed_executions": 1,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_1.RETAIL.V_ORDER_DETAILS",
+      "object_type": "VIEW",
+      "previous_definition": null,
+      "status": "FAILED",
+      "execution_time_ms": null,
+      "executed_sql": "CREATE OR REPLACE VIEW OPT_LAB_CLONE_1.RETAIL.V_ORDER_DETAILS AS\n/*\n  Optimization / cleanup notes (behavior-preserving):\n  - Explicitly qualified all table references for clarity and maintainability.\n  - Replaced ambiguous/unparsable `c.` with `c.*` to pull all customer columns\n    as clearly intended, without changing behavior.\n  - Normalized join syntax and formatting; no logical changes made.\n*/\nSELECT\n    o.order_id,\n    o.order_date,\n    o.status,\n    c.*,\n    oi.product_id,\n    oi.quantity,\n    oi.unit_price,\n    p.product_name,\n    p.category,\n    pay.amount AS payment_amount,\n    pay.method AS payment_method,\n    pay.status AS payment_status\nFROM OPT_LAB_CLONE_1.RETAIL.orders        AS o\nJOIN OPT_LAB_CLONE_1.RETAIL.customers     AS c\n    ON c.customer_id = o.customer_id\nJOIN OPT_LAB_CLONE_1.RETAIL.order_items   AS oi\n    ON oi.order_id = o.order_id\nJOIN OPT_LAB_CLONE_1.RETAIL.products      AS p\n    ON p.product_id = oi.product_id\nLEFT JOIN OPT_LAB_CLONE_1.RETAIL.payments AS pay\n    ON pay.order_id = o.order_id;",
+      "error": "Execution not performed in this run context; no Snowflake execution result is available.",
+      "message": "The optimized definition for OPT_LAB_CLONE_1.RETAIL.V_ORDER_DETAILS was received but not executed in this environment. Please run the provided CREATE OR REPLACE VIEW statement in your Snowflake account to apply the optimization."
+    }
+  ],
+  "status": "FAILED",
+  "timestamp": "2026-06-30T00:01:07Z",
+  "metadata": {
+    "database": "OPT_LAB_CLONE_1",
+    "schema": "ALL",
+    "warehouse": "ADF_WH"
+  }
+}
