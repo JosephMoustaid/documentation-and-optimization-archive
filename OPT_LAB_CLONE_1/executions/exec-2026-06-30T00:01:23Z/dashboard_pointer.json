@@ -1,0 +1,19 @@
+{
+  "database": "OPT_LAB_CLONE_1",
+  "execution_id": "exec-2026-06-30T00:01:23Z",
+  "status": "SUCCESS",
+  "timestamp": "2026-06-30T00:01:23Z",
+  "objects": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_1.RETAIL.V_PRODUCT_SALES",
+      "object_type": "VIEW",
+      "status": "SUCCESS",
+      "execution_time_ms": 150,
+      "artifact_paths": {
+        "previous_definition": "OPT_LAB_CLONE_1/executions/exec-2026-06-30T00:01:23Z/OPT_LAB_CLONE_1.RETAIL.V_PRODUCT_SALES/previous_definition.sql",
+        "executed_sql": "OPT_LAB_CLONE_1/executions/exec-2026-06-30T00:01:23Z/OPT_LAB_CLONE_1.RETAIL.V_PRODUCT_SALES/executed_sql.sql"
+      }
+    }
+  ]
+}
