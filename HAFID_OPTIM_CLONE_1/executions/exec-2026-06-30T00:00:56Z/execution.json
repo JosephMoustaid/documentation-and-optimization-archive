@@ -1,0 +1,28 @@
+{
+  "execution_id": "exec-2026-06-30T00:00:56Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "total_objects": 0,
+  "successful_executions": 0,
+  "failed_executions": 1,
+  "status": "FAILED",
+  "timestamp": "2026-06-30T00:00:56Z",
+  "metadata": {
+    "database": "HAFID_OPTIM_CLONE_1",
+    "schema": "ALL",
+    "warehouse": "ADF_WH"
+  },
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_PRODUCT_PERFORMANCE",
+      "object_type": "VIEW",
+      "previous_definition": null,
+      "status": "FAILED",
+      "execution_time_ms": null,
+      "executed_sql": "CREATE OR REPLACE VIEW HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_PRODUCT_PERFORMANCE AS\n/*\n  Optimizations (no semantic changes):\n  - Compute the PRICE_TIER metrics from a single aggregated result set\n    instead of repeating SUM() expressions in CASE logic.\n  - Use a common subquery to avoid recomputing aggregates per UNION arm.\n  - Preserve CURRENT_DATE()-relative windows and all original filters.\n*/\nWITH FACT_BASE AS (\n    SELECT\n        ORDER_DATE,\n        PRODUCT_ID,\n        PRODUCT_CATEGORY,\n        PRODUCT_SUBCATEGORY,\n        NET_AMOUNT,\n        ORDER_ID,\n        QUANTITY\n    FROM HAFID_OPTIM_CLONE_1.PIPELINE_DWH.FACT_SALES\n),\nAGGREGATES AS (\n    SELECT\n        /* Label for downstream period filtering */\n        CASE\n            WHEN ORDER_DATE >= DATEADD('month', -3, CURRENT_DATE())\n             AND ORDER_DATE <  CURRENT_DATE()                       THEN 'CURRENT_QUARTER'\n            WHEN ORDER_DATE >= DATEADD('month', -6, CURRENT_DATE())\n             AND ORDER_DATE <  DATEADD('month', -3, CURRENT_DATE()) THEN 'PREVIOUS_QUARTER'\n            WHEN ORDER_DATE >= DATEADD('month', -15, CURRENT_DATE())\n             AND ORDER_DATE <  DATEADD('month', -12, CURRENT_DATE()) THEN 'YEAR_AGO_QUARTER'\n            ELSE NULL\n        END AS PERIOD_TYPE,\n        PRODUCT_ID,\n        PRODUCT_CATEGORY,\n        PRODUCT_SUBCATEGORY,\n        SUM(NET_AMOUNT)                      AS REVENUE,\n        COUNT(DISTINCT ORDER_ID)             AS UNIQUE_ORDERS,\n        SUM(QUANTITY)                        AS UNITS_SOLD,\n        SUM(NET_AMOUNT)                      AS TOTAL_NET_AMOUNT,\n        SUM(QUANTITY)                        AS TOTAL_QUANTITY\n    FROM FACT_BASE\n    WHERE (\n        ORDER_DATE >= DATEADD('month', -3,  CURRENT_DATE()) AND ORDER_DATE <  CURRENT_DATE()\n        OR (ORDER_DATE >= DATEADD('month', -6,  CURRENT_DATE()) AND ORDER_DATE < DATEADD('month', -3,  CURRENT_DATE()))\n        OR (ORDER_DATE >= DATEADD('month', -15, CURRENT_DATE()) AND ORDER_DATE < DATEADD('month', -12, CURRENT_DATE()))\n    )\n    GROUP BY\n        CASE\n            WHEN ORDER_DATE >= DATEADD('month', -3, CURRENT_DATE())\n             AND ORDER_DATE <  CURRENT_DATE()                       THEN 'CURRENT_QUARTER'\n            WHEN ORDER_DATE >= DATEADD('month', -6, CURRENT_DATE())\n             AND ORDER_DATE <  DATEADD('month', -3, CURRENT_DATE()) THEN 'PREVIOUS_QUARTER'\n            WHEN ORDER_DATE >= DATEADD('month', -15, CURRENT_DATE())\n             AND ORDER_DATE <  DATEADD('month', -12, CURRENT_DATE()) THEN 'YEAR_AGO_QUARTER'\n            ELSE NULL\n        END,\n        PRODUCT_ID,\n        PRODUCT_CATEGORY,\n        PRODUCT_SUBCATEGORY\n)\nSELECT\n    PERIOD_TYPE,\n    PRODUCT_ID,\n    PRODUCT_CATEGORY,\n    PRODUCT_SUBCATEGORY,\n    REVENUE,\n    UNIQUE_ORDERS,\n    UNITS_SOLD,\n    /* PRICE_TIER logic preserved exactly, now using pre-aggregated values */\n    CASE\n        WHEN TOTAL_QUANTITY > 0 THEN\n            CASE\n                WHEN TOTAL_NET_AMOUNT / NULLIF(TOTAL_QUANTITY, 0) > 100 THEN 'HIGH'\n                WHEN TOTAL_NET_AMOUNT / NULLIF(TOTAL_QUANTITY, 0) > 50  THEN 'MEDIUM'\n                ELSE 'LOW'\n            END\n        ELSE 'NONE'\n    END AS PRICE_TIER\nFROM AGGREGATES\nWHERE PERIOD_TYPE IS NOT NULL;",
+      "error": "Execution not performed in this run context; no Snowflake execution result is available.",
+      "message": "The optimized definition for HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_PRODUCT_PERFORMANCE was received but not executed in this environment. Please run the provided CREATE OR REPLACE VIEW statement in your Snowflake account to apply the optimization."
+    }
+  ]
+}
