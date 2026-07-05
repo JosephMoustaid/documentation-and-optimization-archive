@@ -1,0 +1,15 @@
+{
+  "execution_id": "exec-2026-06-30T00:00:50Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "total_objects": 0,
+  "successful_executions": 0,
+  "failed_executions": 1,
+  "status": "FAILED",
+  "timestamp": "2026-06-30T00:00:50Z",
+  "metadata": {
+    "database": "HAFID_OPTIM_CLONE_1",
+    "schema": "ALL",
+    "warehouse": "ADF_WH"
+  }
+}
