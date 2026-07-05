@@ -1,0 +1,28 @@
+{
+  "execution_id": "exec-2026-06-30T00:01:04Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "total_objects": 0,
+  "successful_executions": 0,
+  "failed_executions": 1,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_1.RETAIL.V_RECENT_ACTIVE_CATALOG",
+      "object_type": "VIEW",
+      "previous_definition": null,
+      "status": "FAILED",
+      "execution_time_ms": null,
+      "executed_sql": "CREATE OR REPLACE VIEW OPT_LAB_CLONE_1.RETAIL.V_RECENT_ACTIVE_CATALOG AS\n/*\n  Optimization notes (behavior-preserving):\n  - Preserved CASE-SENSITIVE filter on category via UPPER(column) to ensure identical behavior.\n  - Kept YEAR(i.last_restocked) = YEAR(CURRENT_DATE) to avoid changing date boundary semantics.\n  - Added explicit, standardized aliasing for readability.\n  - Left predicates structurally unchanged to guarantee identical results and null-handling.\n*/\nSELECT\n    p.product_id,\n    p.product_name,\n    p.category,\n    p.unit_price\nFROM products  AS p\nJOIN inventory AS i\n    ON i.product_id = p.product_id\nWHERE UPPER(p.category) = 'ELECTRONICS'\n  AND YEAR(i.last_restocked) = YEAR(CURRENT_DATE)\n  AND p.active_flag = TRUE;",
+      "error": "Execution not performed in this run context; no Snowflake execution result is available.",
+      "message": "The optimized definition for OPT_LAB_CLONE_1.RETAIL.V_RECENT_ACTIVE_CATALOG was received but not executed in this environment. Please run the provided CREATE OR REPLACE VIEW statement in your Snowflake account to apply the optimization."
+    }
+  ],
+  "status": "FAILED",
+  "timestamp": "2026-06-30T00:01:04Z",
+  "metadata": {
+    "database": "OPT_LAB_CLONE_1",
+    "schema": "ALL",
+    "warehouse": "ADF_WH"
+  }
+}
