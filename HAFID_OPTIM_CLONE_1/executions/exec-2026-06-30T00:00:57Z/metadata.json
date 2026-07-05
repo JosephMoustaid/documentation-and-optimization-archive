@@ -1,0 +1,8 @@
+{
+  "database": "HAFID_OPTIM_CLONE_1",
+  "schema": "ALL",
+  "warehouse": "ADF_WH",
+  "execution_id": "exec-2026-06-30T00:00:57Z",
+  "timestamp": "2026-06-30T00:00:57Z",
+  "status": "FAILED"
+}
