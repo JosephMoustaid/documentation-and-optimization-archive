@@ -1,0 +1,29 @@
+{
+  "execution_id": "exec-2026-06-30T00:01:00Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "total_objects": 0,
+  "successful_executions": 0,
+  "failed_executions": 1,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_ORDER_DETAILS_FULL",
+      "object_type": "VIEW",
+      "previous_definition": null,
+      "status": "FAILED",
+      "execution_time_ms": null,
+      "executed_sql": "CREATE OR REPLACE VIEW HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_ORDER_DETAILS_FULL AS\n/*\n  NOTE: The original view definition snippet provided was truncated and\n  syntactically incomplete. To preserve functional equivalence, this\n  definition includes only the clearly specified, valid portion of the\n  original logic.\n\n  If additional columns or joins existed in the original view, they must\n  be reintroduced here from the full source definition to maintain exact\n  behavior.\n*/\nSELECT\n    -- Explicit cast from VARIANT to STRING for order_id, as in original\n    o.PAYLOAD:\"order_id\"::STRING AS ORDER_ID\nFROM HAFID_OPTIM_CLONE_1.PIPELINE_MART.SOURCE_ORDERS o;",
+      "error": "Execution not performed in this run context; no Snowflake execution result is available.",
+      "message": "The optimized definition for HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_ORDER_DETAILS_FULL was received but not executed in this environment. Please run the provided CREATE OR REPLACE VIEW statement in your Snowflake account to apply the optimization."
+    }
+  ],
+  "status": "FAILED",
+  "timestamp": "2026-06-30T00:01:00Z",
+  "metadata": {
+    "database": "HAFID_OPTIM_CLONE_1",
+    "schema": "ALL",
+    "warehouse": "ADF_WH"
+  },
+  "note": "Execution was not performed in this run context; manual Snowflake execution is required to apply the SQL artifacts."
+}
