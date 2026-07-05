@@ -1,0 +1,30 @@
+{
+  "execution_id": "exec-2026-06-30T00:00:55Z",
+  "timestamp": "2026-06-30T00:00:55Z",
+  "status": "FAILED",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "summary": {
+    "total_objects": 0,
+    "successful_executions": 0,
+    "failed_executions": 1
+  },
+  "metadata": {
+    "database": "HAFID_OPTIM_CLONE_1",
+    "schema": "ALL",
+    "warehouse": "ADF_WH"
+  },
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_CUSTOMER_SEGMENTATION",
+      "object_type": "VIEW",
+      "previous_definition": null,
+      "status": "FAILED",
+      "execution_time_ms": null,
+      "executed_sql": "CREATE OR REPLACE VIEW HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_CUSTOMER_SEGMENTATION AS\n/*\n  Optimizations applied (no change in semantics):\n  - Replaced multiple correlated scalar subqueries with a single aggregation\n    grouped by CUSTOMER_ID, then joined back. This preserves results while\n    scanning FACT_SALES only once per customer instead of multiple times.\n  - Centralized the status filter so that all metrics are computed over the\n    same filtered FACT_SALES set as in the original query.\n  - Kept DISTINCT on (CUSTOMER_ID, CUSTOMER_REGION, CUSTOMER_TIER) to\n    preserve row cardinality and output exactly as before.\n*/\nWITH BASE AS (\n    SELECT\n        fs.CUSTOMER_ID,\n        fs.CUSTOMER_REGION,\n        fs.CUSTOMER_TIER\n    FROM HAFID_OPTIM_CLONE_1.PIPELINE_DWH.FACT_SALES fs\n    WHERE fs.STATUS IN ('completed', 'shipped', 'delivered', 'processing')\n    GROUP BY\n        fs.CUSTOMER_ID,\n        fs.CUSTOMER_REGION,\n        fs.CUSTOMER_TIER\n),\nAGG AS (\n    SELECT\n        fs.CUSTOMER_ID,\n        COUNT(*)            AS TOTAL_ORDERS,\n        SUM(fs.NET_AMOUNT)  AS LIFETIME_VALUE,\n        MAX(fs.ORDER_DATE)  AS LAST_ORDER_DATE,\n        MIN(fs.ORDER_DATE)  AS FIRST_ORDER_DATE\n    FROM HAFID_OPTIM_CLONE_1.PIPELINE_DWH.FACT_SALES fs\n    WHERE fs.STATUS IN ('completed', 'shipped', 'delivered', 'processing')\n    GROUP BY\n        fs.CUSTOMER_ID\n)\nSELECT DISTINCT\n    b.CUSTOMER_ID,\n    b.CUSTOMER_REGION,\n    b.CUSTOMER_TIER,\n    a.TOTAL_ORDERS,\n    a.LIFETIME_VALUE,\n    a.LAST_ORDER_DATE,\n    a.FIRST_ORDER_DATE,\n    DATEDIFF('day', a.FIRST_ORDER_DATE, a.LAST_ORDER_DATE) AS CUSTOMER_TENURE_DAYS\nFROM BASE b\nJOIN AGG a\n  ON a.CUSTOMER_ID = b.CUSTOMER_ID;",
+      "error": "Execution not performed in this run context; no Snowflake execution result is available.",
+      "message": "The optimized definition for HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_CUSTOMER_SEGMENTATION was received but not executed in this environment. Please run the provided CREATE OR REPLACE VIEW statement in your Snowflake account to apply the optimization."
+    }
+  ]
+}
