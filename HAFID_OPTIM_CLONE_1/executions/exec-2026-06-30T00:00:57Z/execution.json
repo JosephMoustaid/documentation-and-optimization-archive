@@ -1,0 +1,28 @@
+{
+  "execution_id": "exec-2026-06-30T00:00:57Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "total_objects": 0,
+  "successful_executions": 0,
+  "failed_executions": 1,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_EVENT_FUNNEL",
+      "object_type": "VIEW",
+      "previous_definition": null,
+      "status": "FAILED",
+      "execution_time_ms": null,
+      "executed_sql": "CREATE OR REPLACE VIEW HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_EVENT_FUNNEL AS\nWITH BASE_EVENTS AS (\n    SELECT\n        /* Normalize event date from JSON timestamp */\n        TO_DATE(e1.PAYLOAD:timestamp::STRING)          AS EVENT_DATE,\n\n        /* Core identifiers from payload */\n        e1.PAYLOAD:user_id::STRING                    AS USER_ID,\n        e1.PAYLOAD:session_id::STRING                 AS SESSION_ID,\n\n        /* Event type normalized to lower case for pattern matching */\n        LOWER(e1.PAYLOAD:event_type::STRING)          AS EVENT_TYPE\n    FROM HAFID_OPTIM_CLONE_1.PIPELINE_RAW.RAW_EVENTS AS e1\n    WHERE e1._LOADED_AT >= DATEADD('day', -90, CURRENT_TIMESTAMP())\n),\nSESSION_FUNNEL AS (\n    /*\n       Aggregate funnel events at session level.\n       We keep separate counts for each funnel stage based on\n       substring pattern matching, preserving original LIKE semantics.\n    */\n    SELECT\n        EVENT_DATE,\n        USER_ID,\n        SESSION_ID,\n\n        /* View stage */\n        COUNT_IF(EVENT_TYPE LIKE '%view%')     AS VIEW_EVENTS,\n\n        /* Cart stage */\n        COUNT_IF(EVENT_TYPE LIKE '%cart%')     AS CART_EVENTS,\n\n        /* Checkout stage */\n        COUNT_IF(EVENT_TYPE LIKE '%check%')    AS CHECK_EVENTS,\n\n        /* Purchase stage */\n        COUNT_IF(EVENT_TYPE LIKE '%purchase%') AS PURCHASE_EVENTS\n    FROM BASE_EVENTS\n    GROUP BY\n        EVENT_DATE,\n        USER_ID,\n        SESSION_ID\n)\nSELECT\n    EVENT_DATE,\n    USER_ID,\n    SESSION_ID,\n    VIEW_EVENTS,\n    CART_EVENTS,\n    CHECK_EVENTS,\n    PURCHASE_EVENTS,\n\n    /*\n       Conversion rate logic inferred from original CASE pattern.\n       We compute rate as purchase events over view events.\n       Using explicit CASE to preserve division-by-zero behavior.\n    */\n    CASE\n        WHEN VIEW_EVENTS > 0 THEN\n            ROUND(\n                (PURCHASE_EVENTS::NUMBER(38, 6) / NULLIF(VIEW_EVENTS::NUMBER(38, 6), 0))\n                * 100,\n                2\n            )\n        ELSE 0\n    END AS CONVERSION_RATE\nFROM SESSION_FUNNEL;",
+      "error": "Execution not performed in this run context; no Snowflake execution result is available.",
+      "message": "The optimized definition for HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_EVENT_FUNNEL was received but not executed in this environment. Please run the provided CREATE OR REPLACE VIEW statement in your Snowflake account to apply the optimization."
+    }
+  ],
+  "status": "FAILED",
+  "timestamp": "2026-06-30T00:00:57Z",
+  "metadata": {
+    "database": "HAFID_OPTIM_CLONE_1",
+    "schema": "ALL",
+    "warehouse": "ADF_WH"
+  }
+}
