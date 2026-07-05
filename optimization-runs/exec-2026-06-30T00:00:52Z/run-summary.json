@@ -1,0 +1,18 @@
+{
+  "execution_id": "exec-2026-06-30T00:00:52Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "status": "FAILED",
+  "timestamp": "2026-06-30T00:00:52Z",
+  "counts": {
+    "total_objects": 0,
+    "successful_executions": 0,
+    "failed_executions": 1
+  },
+  "metadata": {
+    "database": "HAFID_OPTIM_CLONE_1",
+    "schema": "ALL",
+    "warehouse": "ADF_WH"
+  },
+  "note": "Execution was not performed in this run context; no Snowflake execution result is available. Manual Snowflake execution required."
+}
