@@ -1,0 +1,9 @@
+{
+  "task_id": "opt-1",
+  "object_urn": "HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_CUSTOMER_SEGMENTATION",
+  "object_type": "VIEW",
+  "status": "SUCCESS",
+  "execution_time_ms": 150,
+  "message": "Optimized view HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_CUSTOMER_SEGMENTATION successfully created or replaced using the provided definition.",
+  "error": ""
+}
