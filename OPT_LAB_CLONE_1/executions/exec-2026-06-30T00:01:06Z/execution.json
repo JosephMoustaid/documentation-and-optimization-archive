@@ -1,0 +1,28 @@
+{
+  "execution_id": "exec-2026-06-30T00:01:06Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "total_objects": 0,
+  "successful_executions": 0,
+  "failed_executions": 1,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_1.RETAIL.V_CUSTOMER_ORDER_SUMMARY",
+      "object_type": "VIEW",
+      "previous_definition": null,
+      "status": "FAILED",
+      "execution_time_ms": null,
+      "executed_sql": "CREATE OR REPLACE VIEW OPT_LAB_CLONE_1.RETAIL.V_CUSTOMER_ORDER_SUMMARY AS\n/*\n  Optimization notes (behavior-preserving):\n  - Replaced three correlated scalar subqueries with a single LEFT JOIN to an aggregated\n    derived table, eliminating repeated scans of ORDERS while preserving NULL behavior.\n  - GROUP BY only customer_id in the derived table; customers without orders still appear\n    with NULL metrics (LEFT JOIN), matching original semantics.\n  - Preserved output columns via c.* projection and identical aggregate calculations.\n*/\nSELECT\n    c.*,\n    o_agg.num_orders,\n    o_agg.total_spent,\n    o_agg.last_order\nFROM customers AS c\nLEFT JOIN (\n    SELECT\n        o.customer_id,\n        COUNT(*)              AS num_orders,\n        SUM(o.order_total)    AS total_spent,\n        MAX(o.order_date)     AS last_order\n    FROM orders AS o\n    GROUP BY o.customer_id\n) AS o_agg\n    ON o_agg.customer_id = c.customer_id;",
+      "error": "Execution not performed in this run context; no Snowflake execution result is available.",
+      "message": "The optimized definition for OPT_LAB_CLONE_1.RETAIL.V_CUSTOMER_ORDER_SUMMARY was received but not executed in this environment. Please run the provided CREATE OR REPLACE VIEW statement in your Snowflake account to apply the optimization."
+    }
+  ],
+  "status": "FAILED",
+  "timestamp": "2026-06-30T00:01:06Z",
+  "metadata": {
+    "database": "OPT_LAB_CLONE_1",
+    "schema": "ALL",
+    "warehouse": "ADF_WH"
+  }
+}
