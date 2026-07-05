@@ -1,0 +1,24 @@
+{
+  "execution_id": "exec-2026-06-30T00:01:11Z",
+  "database": "OPT_LAB_CLONE_1",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "status": "FAILED",
+  "counts": {
+    "total_objects": 0,
+    "successful_executions": 0,
+    "failed_executions": 1
+  },
+  "items": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_1.RETAIL.V_SUPPLIER_PERFORMANCE",
+      "object_type": "VIEW",
+      "status": "FAILED",
+      "execution_time_ms": null,
+      "has_previous_definition": false,
+      "error": "Execution not performed in this run context; no Snowflake execution result is available."
+    }
+  ],
+  "timestamp": "2026-06-30T00:01:11Z"
+}
