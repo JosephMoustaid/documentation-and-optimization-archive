@@ -1,0 +1,1 @@
+SQL compilation error: Object 'HAFID_OPTIM_CLONE_1.PIPELINE_MART.FCT_SALES' does not exist or not authorized.
