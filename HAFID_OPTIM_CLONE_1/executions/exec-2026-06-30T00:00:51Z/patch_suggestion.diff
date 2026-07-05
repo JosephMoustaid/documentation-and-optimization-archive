@@ -1,0 +1,25 @@
+diff --git a/optimized.sql b/optimized.sql
+index 0000000..1111111 100644
+--- a/optimized.sql
++++ b/optimized.sql
+@@
+-CREATE OR REPLACE VIEW HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_EVENT_FUNNEL AS
+-/* ... header comment ... */
+-
+-CREATE OR REPLACE VIEW HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_EVENT_FUNNEL AS
+-WITH parsed_events AS (
++CREATE OR REPLACE VIEW HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_EVENT_FUNNEL AS
++/* ... header comment ... */
++
++WITH parsed_events AS (
+     SELECT
+         TRY_TO_TIMESTAMP_NTZ(e1.PAYLOAD:timestamp::string) AS event_ts,
+         TO_DATE(TRY_TO_TIMESTAMP_NTZ(e1.PAYLOAD:timestamp::string)) AS event_date,
+         e1.PAYLOAD:user_id::string      AS user_id,
+         LOWER(e1.PAYLOAD:event_type::string) AS event_type_norm,
+         e1.PAYLOAD:session_id::string   AS session_id,
+         e1.PAYLOAD:event_type::string   AS event_type_raw,
+-        e1.*
+     FROM HAFID_OPTIM_CLONE_1.PIPELINE_RAW.RAW_EVENTS e1
+     WHERE e1._LOADED_AT >= DATEADD(day, -90, CURRENT_TIMESTAMP())
+ ),
