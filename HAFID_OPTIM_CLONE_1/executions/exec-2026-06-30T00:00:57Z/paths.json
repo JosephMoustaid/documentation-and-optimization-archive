@@ -1,0 +1,13 @@
+{
+  "database": "HAFID_OPTIM_CLONE_1",
+  "execution_id": "exec-2026-06-30T00:00:57Z",
+  "artifacts": {
+    "execution": "HAFID_OPTIM_CLONE_1/executions/exec-2026-06-30T00:00:57Z/execution.json",
+    "metadata": "HAFID_OPTIM_CLONE_1/executions/exec-2026-06-30T00:00:57Z/metadata.json",
+    "summary": "HAFID_OPTIM_CLONE_1/executions/exec-2026-06-30T00:00:57Z/summary.md",
+    "readme": "HAFID_OPTIM_CLONE_1/executions/exec-2026-06-30T00:00:57Z/README.md",
+    "optimized_sql": "HAFID_OPTIM_CLONE_1/executions/exec-2026-06-30T00:00:57Z/optimized.sql",
+    "executed_sql": "HAFID_OPTIM_CLONE_1/executions/exec-2026-06-30T00:00:57Z/executed_sql.sql",
+    "object": "HAFID_OPTIM_CLONE_1/executions/exec-2026-06-30T00:00:57Z/object.json"
+  }
+}
