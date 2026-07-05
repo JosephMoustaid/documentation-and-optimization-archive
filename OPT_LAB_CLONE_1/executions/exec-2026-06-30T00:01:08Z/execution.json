@@ -1,0 +1,28 @@
+{
+  "execution_id": "exec-2026-06-30T00:01:08Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "total_objects": 0,
+  "successful_executions": 0,
+  "failed_executions": 1,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_1.RETAIL.V_CUSTOMER_LTV_RANKED",
+      "object_type": "VIEW",
+      "previous_definition": null,
+      "status": "FAILED",
+      "execution_time_ms": null,
+      "executed_sql": "CREATE OR REPLACE VIEW OPT_LAB_CLONE_1.RETAIL.V_CUSTOMER_LTV_RANKED AS\n/*\n  Optimizations (behavior-preserving):\n  - Explicitly qualified base table references with schema for clarity.\n  - Retained the original scalar subquery-based ranking logic to preserve\n    exact behavior, including handling of ties and NULLs.\n*/\nSELECT\n    c.customer_id,\n    c.first_name,\n    c.last_name,\n    c.lifetime_value,\n    /*\n      Rank is defined as: 1 + number of customers with strictly higher\n      lifetime_value than the current customer.\n      This preserves the original semantics exactly.\n    */\n    (\n        SELECT COUNT(*)\n        FROM OPT_LAB_CLONE_1.RETAIL.customers AS c2\n        WHERE c2.lifetime_value > c.lifetime_value\n    ) + 1 AS ltv_rank\nFROM OPT_LAB_CLONE_1.RETAIL.customers AS c;",
+      "error": "Execution not performed in this run context; no Snowflake execution result is available.",
+      "message": "The optimized definition for OPT_LAB_CLONE_1.RETAIL.V_CUSTOMER_LTV_RANKED was received but not executed in this environment. Please run the provided CREATE OR REPLACE VIEW statement in your Snowflake account to apply the optimization."
+    }
+  ],
+  "status": "FAILED",
+  "timestamp": "2026-06-30T00:01:08Z",
+  "metadata": {
+    "database": "OPT_LAB_CLONE_1",
+    "schema": "ALL",
+    "warehouse": "ADF_WH"
+  }
+}
