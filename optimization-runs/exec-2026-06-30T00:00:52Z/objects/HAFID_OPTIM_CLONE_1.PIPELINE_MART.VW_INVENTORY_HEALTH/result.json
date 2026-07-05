@@ -1,0 +1,10 @@
+{
+  "task_id": "opt-1",
+  "object_urn": "HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_INVENTORY_HEALTH",
+  "object_type": "VIEW",
+  "status": "FAILED",
+  "execution_time_ms": null,
+  "previous_definition": null,
+  "error": "Execution not performed in this run context; no Snowflake execution result is available.",
+  "message": "The optimized definition for HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_INVENTORY_HEALTH was received but not executed in this environment. Please run the provided CREATE OR REPLACE VIEW statement in your Snowflake account to apply the optimization."
+}
