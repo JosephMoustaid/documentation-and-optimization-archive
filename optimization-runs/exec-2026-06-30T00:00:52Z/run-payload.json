@@ -1,0 +1,23 @@
+{
+  "execution_id": "exec-2026-06-30T00:00:52Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "total_objects": 0,
+  "successful_executions": 0,
+  "failed_executions": 1,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_INVENTORY_HEALTH",
+      "object_type": "VIEW",
+      "previous_definition": null,
+      "status": "FAILED",
+      "execution_time_ms": null,
+      "executed_sql": "CREATE OR REPLACE VIEW HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_INVENTORY_HEALTH AS\n/*\n  Optimizations applied:\n  - Single pass over RAW_INVENTORY with ROW_NUMBER to pick latest snapshot per product/warehouse.\n  - Pre-aggregation of sales velocity in a separate CTE, joined by PRODUCT_ID only.\n  - SARGable filters and explicit casting for JSON fields.\n  - Clear, ordered CASE expression for stock status classification.\n*/\nWITH all_inventory AS (\n    SELECT\n        ri.PAYLOAD:product_id::string      AS PRODUCT_ID,\n        ri.PAYLOAD:warehouse_id::string    AS WAREHOUSE_ID,\n        TRY_TO_NUMBER(ri.PAYLOAD:qty_on_hand::string)    AS QTY_ON_HAND,\n        TRY_TO_NUMBER(ri.PAYLOAD:reorder_point::string)  AS REORDER_POINT,\n        TRY_TO_TIMESTAMP_NTZ(ri.PAYLOAD:inventory_ts::string) AS INVENTORY_TS,\n        ri._LOADED_AT,\n        ROW_NUMBER() OVER (\n            PARTITION BY ri.PAYLOAD:product_id::string,\n                         ri.PAYLOAD:warehouse_id::string\n            ORDER BY COALESCE(\n                TRY_TO_TIMESTAMP_NTZ(ri.PAYLOAD:inventory_ts::string),\n                ri._LOADED_AT\n            ) DESC\n        ) AS RN_LATEST\n    FROM HAFID_OPTIM_CLONE_1.PIPELINE_RAW.RAW_INVENTORY ri\n    -- Optional pruning window on load time if desired for maintenance/perf\n    -- WHERE ri._LOADED_AT >= DATEADD(day, -365, CURRENT_TIMESTAMP())\n),\n\nsales_velocity AS (\n    SELECT\n        s.PAYLOAD:product_id::string AS PRODUCT_ID,\n        AVG(TRY_TO_NUMBER(s.PAYLOAD:daily_units_sold::string)) AS DAILY_VELOCITY\n    FROM HAFID_OPTIM_CLONE_1.PIPELINE_RAW.RAW_SALES s\n    -- Optional: restrict to recent sales history for more relevant velocity\n    -- WHERE s._LOADED_AT >= DATEADD(day, -90, CURRENT_TIMESTAMP())\n    GROUP BY\n        s.PAYLOAD:product_id::string\n)\n\nSELECT\n    ai.PRODUCT_ID,\n    ai.WAREHOUSE_ID,\n    ai.QTY_ON_HAND,\n    ai.REORDER_POINT,\n    ai.INVENTORY_TS,\n    sv.DAILY_VELOCITY,\n    CASE\n        WHEN ai.QTY_ON_HAND IS NULL\n            OR ai.REORDER_POINT IS NULL\n            THEN 'UNKNOWN'\n        WHEN ai.QTY_ON_HAND <= ai.REORDER_POINT\n            THEN 'CRITICAL'\n        WHEN ai.QTY_ON_HAND <= ai.REORDER_POINT * 1.5\n            THEN 'LOW_STOCK'\n        WHEN sv.DAILY_VELOCITY > 0\n             AND ai.QTY_ON_HAND / sv.DAILY_VELOCITY > 180\n            THEN 'OVERSTOCK'\n        ELSE 'HEALTHY'\n    END AS STOCK_STATUS\nFROM all_inventory ai\nLEFT JOIN sales_velocity sv\n    ON sv.PRODUCT_ID = ai.PRODUCT_ID\nWHERE ai.RN_LATEST = 1;",
+      "error": "Execution not performed in this run context; no Snowflake execution result is available.",
+      "message": "The optimized definition for HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_INVENTORY_HEALTH was received but not executed in this environment. Please run the provided CREATE OR REPLACE VIEW statement in your Snowflake account to apply the optimization."
+    }
+  ],
+  "status": "FAILED",
+  "timestamp": "2026-06-30T00:00:52Z"
+}
