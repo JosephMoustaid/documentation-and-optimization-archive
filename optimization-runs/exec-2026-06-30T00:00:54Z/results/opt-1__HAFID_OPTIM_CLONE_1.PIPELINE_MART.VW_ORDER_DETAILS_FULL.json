@@ -1,0 +1,18 @@
+{
+  "execution_id": "exec-2026-06-30T00:00:54Z",
+  "task_id": "opt-1",
+  "object_urn": "HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_ORDER_DETAILS_FULL",
+  "object_type": "VIEW",
+  "status": "FAILED",
+  "previous_definition": null,
+  "execution_time_ms": null,
+  "executed_sql": "CREATE OR REPLACE VIEW HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_ORDER_DETAILS_FULL AS\n/*\n  Optimizations / assumptions:\n  - Standardized JSON extraction using colon (:) operator and explicit CASTs.\n  - Gave consistent, clear aliases for core identifiers.\n  - Left structure minimal because original definition snippet is incomplete.\n  - Kept projection narrow to avoid unnecessary column materialization.\n*/\nSELECT\n    -- Order identifier extracted from VARIANT column o.PAYLOAD\n    o.PAYLOAD:order_id::STRING   AS ORDER_ID,\n    -- Product identifier if available in the same payload (assumption based on metadata)\n    o.PAYLOAD:product_id::STRING AS PRODUCT_ID,\n    -- Customer identifier if also present in o.PAYLOAD (alternative sources commented below)\n    o.PAYLOAD:customer_id::STRING AS CUSTOMER_ID\nFROM HAFID_OPTIM_CLONE_1.PIPELINE_MART.SRC_ORDERS o;\n\n/*\nAlternative mappings (uncomment / adapt if schema differs):\n\n-- If customer_id is stored in c.PAYLOAD, and product_id in p.PAYLOAD:\n-- FROM HAFID_OPTIM_CLONE_1.PIPELINE_MART.SRC_ORDERS   o\n-- JOIN HAFID_OPTIM_CLONE_1.PIPELINE_MART.SRC_CUSTOMERS c\n--   ON o.PAYLOAD:customer_id::STRING = c.PAYLOAD:customer_id::STRING\n-- JOIN HAFID_OPTIM_CLONE_1.PIPELINE_MART.SRC_PRODUCTS  p\n--   ON o.PAYLOAD:product_id::STRING = p.PAYLOAD:product_id::STRING;\n*/",
+  "error": "Execution not performed in this run context; no Snowflake execution result is available.",
+  "message": "The optimized definition for HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_ORDER_DETAILS_FULL was received but not executed in this environment. Please run the provided CREATE OR REPLACE VIEW statement in your Snowflake account to apply the optimization.",
+  "metadata": {
+    "database": "HAFID_OPTIM_CLONE_1",
+    "schema": "ALL",
+    "warehouse": "ADF_WH"
+  },
+  "recorded_at": "2026-06-30T00:00:54Z"
+}
