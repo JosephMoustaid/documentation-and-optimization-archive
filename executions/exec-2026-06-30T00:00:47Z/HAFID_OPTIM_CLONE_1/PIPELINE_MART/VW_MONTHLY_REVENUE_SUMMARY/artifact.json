@@ -1,0 +1,23 @@
+{
+  "execution_id": "exec-2026-06-30T00:00:47Z",
+  "timestamp": "2026-06-30T00:00:47Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "status": "FAILED",
+  "summary": {
+    "total_objects": 0,
+    "successful_executions": 0,
+    "failed_executions": 1
+  },
+  "result": {
+    "task_id": "opt-1",
+    "object_urn": "HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_MONTHLY_REVENUE_SUMMARY",
+    "object_type": "VIEW",
+    "previous_definition": null,
+    "status": "FAILED",
+    "execution_time_ms": null,
+    "executed_sql": "CREATE OR REPLACE VIEW HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_MONTHLY_REVENUE_SUMMARY AS\n/*\n    Optimizations applied:\n    1) Simplified date handling:\n       - Use TO_CHAR(ORDER_DATE, 'YYYY-MM') directly instead of nested\n         TO_VARCHAR -> TO_DATE -> TO_CHAR.\n    2) Removed unnecessary double casts:\n       - NET_AMOUNT, GROSS_AMOUNT, DISCOUNT_PCT cast once to appropriate\n         numeric types (FLOAT/NUMBER), removing CAST-to-VARCHAR detours.\n    3) Replaced GROUP BY positional references with explicit columns:\n       - More robust and readable; avoids errors when column order changes.\n    4) Replaced COUNT() with COUNT(*):\n       - COUNT() is invalid; COUNT(*) is standard and efficient.\n    5) Preserved filter pushdown and post-aggregation filter:\n       - YEAR(ORDER_DATE) and STATUS filter stay in base aggregation\n         for pruning; TOTAL_REVENUE > 0 remains as HAVING-equivalent\n         in outer query for clarity.\n*/\nSELECT\n    sub.revenue_month,\n    sub.product_category,\n    sub.customer_region,\n    sub.channel,\n    sub.total_revenue,\n    sub.total_gross,\n    sub.order_count,\n    sub.avg_discount\nFROM (\n    SELECT\n        TO_CHAR(ORDER_DATE, 'YYYY-MM')                           AS revenue_month,\n        PRODUCT_CATEGORY                                         AS product_category,\n        CUSTOMER_REGION                                          AS customer_region,\n        CHANNEL                                                  AS channel,\n        SUM(CAST(NET_AMOUNT   AS FLOAT))                         AS total_revenue,\n        SUM(CAST(GROSS_AMOUNT AS FLOAT))                         AS total_gross,\n        COUNT(*)                                                 AS order_count,\n        AVG(CAST(DISCOUNT_PCT AS NUMBER))                        AS avg_discount\n    FROM HAFID_OPTIM_CLONE_1.PIPELINE_DWH.FACT_SALES\n    WHERE YEAR(ORDER_DATE) >= 2020\n      AND STATUS != 'cancelled'\n    GROUP BY\n        TO_CHAR(ORDER_DATE, 'YYYY-MM'),\n        PRODUCT_CATEGORY,\n        CUSTOMER_REGION,\n        CHANNEL\n) sub\nWHERE sub.total_revenue > 0\nORDER BY sub.revenue_month DESC;",
+    "error": "Execution not performed in this run context; no Snowflake execution result is available.",
+    "message": "The optimized definition for HAFID_OPTIM_CLONE_1.PIPELINE_MART.VW_MONTHLY_REVENUE_SUMMARY was received but not executed in this environment. Please run the provided CREATE OR REPLACE VIEW statement in your Snowflake account to apply the optimization."
+  }
+}
