@@ -1,0 +1,28 @@
+{
+  "execution_id": "exec-2026-06-30T00:01:01Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "total_objects": 0,
+  "successful_executions": 0,
+  "failed_executions": 1,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_1.RETAIL.V_SUPPLIER_PERFORMANCE",
+      "object_type": "VIEW",
+      "previous_definition": null,
+      "status": "FAILED",
+      "execution_time_ms": null,
+      "executed_sql": "CREATE OR REPLACE VIEW OPT_LAB_CLONE_1.RETAIL.V_SUPPLIER_PERFORMANCE AS\n/*\n  Optimization notes (behavior-preserving):\n  - Replaced DISTINCT + window aggregates with a grouped subquery to\n    compute per-supplier metrics, then joined back to suppliers.\n  - This avoids redundant window computations over duplicated rows\n    while preserving exact results and output schema.\n*/\nSELECT\n    s.supplier_id,\n    s.supplier_name,\n    s.country,\n    sp.sku_count,\n    sp.avg_stock\nFROM suppliers s\nLEFT JOIN (\n    SELECT\n        i.supplier_id,\n        COUNT(i.inventory_id) AS sku_count,\n        AVG(i.qty_on_hand) AS avg_stock\n    FROM inventory i\n    GROUP BY i.supplier_id\n) sp\n    ON sp.supplier_id = s.supplier_id;",
+      "error": "Execution not performed in this run context; no Snowflake execution result is available.",
+      "message": "The optimized definition for OPT_LAB_CLONE_1.RETAIL.V_SUPPLIER_PERFORMANCE was received but not executed in this environment. Please run the provided CREATE OR REPLACE VIEW statement in your Snowflake account to apply the optimization."
+    }
+  ],
+  "status": "FAILED",
+  "timestamp": "2026-06-30T00:01:01Z",
+  "metadata": {
+    "database": "OPT_LAB_CLONE_1",
+    "schema": "ALL",
+    "warehouse": "ADF_WH"
+  }
+}
