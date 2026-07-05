@@ -1,0 +1,28 @@
+{
+  "execution_id": "exec-2026-06-30T00:01:11Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "total_objects": 0,
+  "successful_executions": 0,
+  "failed_executions": 1,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_1.RETAIL.V_SUPPLIER_PERFORMANCE",
+      "object_type": "VIEW",
+      "previous_definition": null,
+      "status": "FAILED",
+      "execution_time_ms": null,
+      "executed_sql": "CREATE OR REPLACE VIEW OPT_LAB_CLONE_1.RETAIL.V_SUPPLIER_PERFORMANCE AS\n/*\n  Optimizations (behavior-preserving):\n  - Removed DISTINCT and window functions in favor of a grouped aggregation,\n    which is semantically equivalent because all non-aggregated columns are\n    functionally dependent on supplier_id via the join.\n  - Fully qualified base tables (OPT_LAB_CLONE_1.RETAIL.SUPPLIERS, OPT_LAB_CLONE_1.RETAIL.INVENTORY)\n    for stable name resolution.\n  - COUNT(i.inventory_id) and AVG(i.qty_on_hand) are computed per supplier using GROUP BY,\n    preserving NULL handling and row-level results when one row per supplier is desired.\n*/\nSELECT\n    s.supplier_id,\n    s.supplier_name,\n    s.country,\n    COUNT(i.inventory_id) AS sku_count,\n    AVG(i.qty_on_hand) AS avg_stock\nFROM OPT_LAB_CLONE_1.RETAIL.SUPPLIERS AS s\nLEFT JOIN OPT_LAB_CLONE_1.RETAIL.INVENTORY AS i\n    ON i.supplier_id = s.supplier_id\nGROUP BY\n    s.supplier_id,\n    s.supplier_name,\n    s.country;",
+      "error": "Execution not performed in this run context; no Snowflake execution result is available.",
+      "message": "The optimized definition for OPT_LAB_CLONE_1.RETAIL.V_SUPPLIER_PERFORMANCE was received but not executed in this environment. Please run the provided CREATE OR REPLACE VIEW statement in your Snowflake account to apply the optimization."
+    }
+  ],
+  "status": "FAILED",
+  "timestamp": "2026-06-30T00:01:11Z",
+  "metadata": {
+    "database": "OPT_LAB_CLONE_1",
+    "schema": "ALL",
+    "warehouse": "ADF_WH"
+  }
+}
