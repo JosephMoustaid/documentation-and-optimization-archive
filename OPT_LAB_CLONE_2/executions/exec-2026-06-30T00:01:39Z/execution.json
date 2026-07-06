@@ -1,0 +1,28 @@
+{
+  "execution_id": "exec-2026-06-30T00:01:39Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "total_objects": 1,
+  "successful_executions": 1,
+  "failed_executions": 0,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_2.RETAIL.V_SUPPLIER_PERFORMANCE",
+      "object_type": "VIEW",
+      "previous_definition": "CREATE OR REPLACE VIEW OPT_LAB_CLONE_2.RETAIL.V_SUPPLIER_PERFORMANCE AS\nSELECT DISTINCT\n s.supplier_id,\n s.supplier_name,\n s.country,\n COUNT(i.inventory_id) OVER (PARTITION BY s.supplier_id) AS sku_count,\n AVG(i.qty_on_hand) OVER (PARTITION BY s.supplier_id) AS avg_stock\nFROM suppliers s\nLEFT JOIN inventory i ON i.supplier_id = s.supplier_id;",
+      "status": "SUCCESS",
+      "execution_time_ms": 150,
+      "executed_sql": "CREATE OR REPLACE VIEW OPT_LAB_CLONE_2.RETAIL.V_SUPPLIER_PERFORMANCE AS\n/*\n  Optimizations (behavior-preserving):\n  - Fully qualified table references to avoid reliance on session defaults.\n  - Removed redundant DISTINCT by rewriting window aggregates as grouped aggregates,\n    preserving exact row cardinality and values while reducing work.\n  - GROUP BY uses only non-aggregated output columns, matching the original\n    projection and ensuring one row per supplier.\n  - LEFT JOIN retained to preserve suppliers with no inventory rows (yielding\n    NULL sku_count and avg_stock), exactly as in the original semantics.\n*/\nSELECT\n    s.supplier_id,\n    s.supplier_name,\n    s.country,\n    COUNT(i.inventory_id) AS sku_count,\n    AVG(i.qty_on_hand)   AS avg_stock\nFROM OPT_LAB_CLONE_2.RETAIL.SUPPLIERS AS s\nLEFT JOIN OPT_LAB_CLONE_2.RETAIL.INVENTORY AS i\n    ON i.supplier_id = s.supplier_id\nGROUP BY\n    s.supplier_id,\n    s.supplier_name,\n    s.country;",
+      "error": "",
+      "message": "Optimized view OPT_LAB_CLONE_2.RETAIL.V_SUPPLIER_PERFORMANCE successfully created or replaced using the provided definition."
+    }
+  ],
+  "status": "SUCCESS",
+  "timestamp": "2026-06-30T00:01:39Z",
+  "metadata": {
+    "database": "OPT_LAB_CLONE_2",
+    "schema": "ALL",
+    "warehouse": "ADF_WH"
+  }
+}
