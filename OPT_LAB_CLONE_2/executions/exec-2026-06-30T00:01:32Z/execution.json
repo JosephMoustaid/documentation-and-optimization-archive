@@ -1,0 +1,28 @@
+{
+  "execution_id": "exec-2026-06-30T00:01:32Z",
+  "timestamp": "2026-06-30T00:01:32Z",
+  "status": "SUCCESS",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "total_objects": 1,
+  "successful_executions": 1,
+  "failed_executions": 0,
+  "metadata": {
+    "database": "OPT_LAB_CLONE_2",
+    "schema": "ALL",
+    "warehouse": "ADF_WH"
+  },
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_2.RETAIL.V_CUSTOMER_LTV_RANKED",
+      "object_type": "VIEW",
+      "previous_definition": "CREATE OR REPLACE VIEW OPT_LAB_CLONE_2.RETAIL.V_CUSTOMER_LTV_RANKED AS\nSELECT\n c.customer_id,\n c.first_name,\n c.last_name,\n c.lifetime_value,\n (SELECT COUNT()\n FROM customers c2\n WHERE c2.lifetime_value > c.lifetime_value) + 1 AS ltv_rank\nFROM customers c;",
+      "executed_sql": "CREATE OR REPLACE VIEW OPT_LAB_CLONE_2.RETAIL.V_CUSTOMER_LTV_RANKED AS\n/*\n  Optimizations (behavior-preserving):\n  - Fully qualified table reference to avoid dependence on session database/schema.\n  - Replaced scalar correlated subquery with analytic ranking function (RANK) for\n    equivalent logic and better performance.\n    Original expression:\n      (SELECT COUNT(*) FROM customers c2\n       WHERE c2.lifetime_value > c.lifetime_value) + 1\n    This computes the number of customers with strictly greater lifetime_value,\n    which is exactly RANK() when ordered by lifetime_value DESC.\n  - Preserves strict \"greater than\" semantics, ties behavior, result values,\n    and output types.\n*/\nSELECT\n    c.customer_id,\n    c.first_name,\n    c.last_name,\n    c.lifetime_value,\n    RANK() OVER (\n        ORDER BY c.lifetime_value DESC\n    ) AS ltv_rank\nFROM OPT_LAB_CLONE_2.RETAIL.CUSTOMERS AS c;",
+      "status": "SUCCESS",
+      "execution_time_ms": 150,
+      "error": "",
+      "message": "Optimized view OPT_LAB_CLONE_2.RETAIL.V_CUSTOMER_LTV_RANKED successfully created or replaced using the provided definition."
+    }
+  ]
+}
