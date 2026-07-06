@@ -1,0 +1,20 @@
+{
+  "database": "OPT_LAB_CLONE_2",
+  "execution_id": "exec-2026-06-30T00:01:33Z",
+  "timestamp": "2026-06-30T00:01:33Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "status": "SUCCESS",
+  "total_objects": 1,
+  "successful_executions": 1,
+  "failed_executions": 0,
+  "objects": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_2.RETAIL.V_ORDER_DETAILS",
+      "object_type": "VIEW",
+      "status": "SUCCESS",
+      "execution_time_ms": 150
+    }
+  ]
+}
