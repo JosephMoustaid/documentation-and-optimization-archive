@@ -1,0 +1,26 @@
+{
+  "execution_id": "exec-2026-06-30T00:01:38Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "total_objects": 1,
+  "successful_executions": 1,
+  "failed_executions": 0,
+  "status": "SUCCESS",
+  "timestamp": "2026-06-30T00:01:38Z",
+  "metadata": {
+    "database": "OPT_LAB_CLONE_2",
+    "schema": "ALL",
+    "warehouse": "ADF_WH"
+  },
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_2.RETAIL.V_RECENT_ACTIVE_CATALOG",
+      "object_type": "VIEW",
+      "status": "SUCCESS",
+      "execution_time_ms": 150,
+      "message": "Optimized view OPT_LAB_CLONE_2.RETAIL.V_RECENT_ACTIVE_CATALOG successfully created or replaced using the provided definition.",
+      "error": ""
+    }
+  ]
+}
