@@ -1,0 +1,22 @@
+{
+  "database": "OPT_LAB_CLONE_2",
+  "execution_id": "exec-2026-06-30T00:01:37Z",
+  "artifacts": [
+    {
+      "path": "OPT_LAB_CLONE_2/executions/exec-2026-06-30T00:01:37Z/optimized.sql",
+      "description": "Executed SQL applied during optimization"
+    },
+    {
+      "path": "OPT_LAB_CLONE_2/executions/exec-2026-06-30T00:01:37Z/previous_definition.sql",
+      "description": "Original object definition captured before optimization"
+    },
+    {
+      "path": "OPT_LAB_CLONE_2/executions/exec-2026-06-30T00:01:37Z/execution.json",
+      "description": "Full execution payload and per-object results"
+    },
+    {
+      "path": "OPT_LAB_CLONE_2/executions/exec-2026-06-30T00:01:37Z/summary.md",
+      "description": "Human-readable execution summary"
+    }
+  ]
+}
