@@ -1,0 +1,28 @@
+{
+  "execution_id": "exec-2026-06-30T00:01:37Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "total_objects": 1,
+  "successful_executions": 1,
+  "failed_executions": 0,
+  "status": "SUCCESS",
+  "timestamp": "2026-06-30T00:01:37Z",
+  "metadata": {
+    "database": "OPT_LAB_CLONE_2",
+    "schema": "ALL",
+    "warehouse": "ADF_WH"
+  },
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_2.RETAIL.V_NEVER_ORDERED_PRODUCTS",
+      "object_type": "VIEW",
+      "status": "SUCCESS",
+      "execution_time_ms": 150,
+      "previous_definition": "CREATE OR REPLACE VIEW OPT_LAB_CLONE_2.RETAIL.V_NEVER_ORDERED_PRODUCTS AS\nSELECT p.\nFROM products p\nWHERE p.product_id NOT IN (SELECT oi.product_id FROM order_items oi);",
+      "executed_sql": "CREATE OR REPLACE VIEW OPT_LAB_CLONE_2.RETAIL.V_NEVER_ORDERED_PRODUCTS AS\n/*\n  Optimizations (behavior-preserving):\n  - Fully qualified table references for stability and to avoid reliance on session defaults.\n  - Replaced NOT IN subquery with NOT EXISTS to avoid NULL-sensitivity issues and\n    to enable more efficient anti-join execution plans.\n  - Kept column projection as in original (selecting all columns from PRODUCTS via alias p).\n*/\nSELECT\n    p.*\nFROM OPT_LAB_CLONE_2.RETAIL.PRODUCTS AS p\nWHERE NOT EXISTS (\n    SELECT 1\n    FROM OPT_LAB_CLONE_2.RETAIL.ORDER_ITEMS AS oi\n    WHERE oi.product_id = p.product_id\n);",
+      "error": "",
+      "message": "Optimized view OPT_LAB_CLONE_2.RETAIL.V_NEVER_ORDERED_PRODUCTS successfully created or replaced using the provided definition."
+    }
+  ]
+}
