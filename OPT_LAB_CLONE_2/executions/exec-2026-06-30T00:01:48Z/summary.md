@@ -7,6 +7,7 @@
 - **Status:** SUCCESS
 - **Timestamp:** 2026-06-30T00:01:48Z
 
+```mermaid
 flowchart TD
     A[Start] --> B[Load Data]
     B --> C{Valid?}
@@ -15,6 +16,7 @@ flowchart TD
     D --> F[Generate Report]
     F --> G[End]
     E --> G
+```
     
 ## Results
 
