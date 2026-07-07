@@ -8,14 +8,20 @@
 - **Timestamp:** 2026-06-30T00:01:48Z
 
 ```mermaid
-flowchart TD
-    A[Start] --> B[Load Data]
-    B --> C{Valid?}
-    C -->|Yes| D[Process Data]
-    C -->|No| E[Show Error]
-    D --> F[Generate Report]
-    F --> G[End]
-    E --> G
+erDiagram
+    CUSTOMER {
+        INT customer_id PK
+        VARCHAR name
+        VARCHAR email
+    }
+
+    ORDER {
+        INT order_id PK
+        DATE order_date
+        INT customer_id FK
+    }
+
+    CUSTOMER ||--o{ ORDER : places
 ```
     
 ## Results
