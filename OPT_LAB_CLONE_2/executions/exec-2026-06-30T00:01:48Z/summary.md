@@ -7,6 +7,15 @@
 - **Status:** SUCCESS
 - **Timestamp:** 2026-06-30T00:01:48Z
 
+flowchart TD
+    A[Start] --> B[Load Data]
+    B --> C{Valid?}
+    C -->|Yes| D[Process Data]
+    C -->|No| E[Show Error]
+    D --> F[Generate Report]
+    F --> G[End]
+    E --> G
+    
 ## Results
 
 - Total objects: 1
