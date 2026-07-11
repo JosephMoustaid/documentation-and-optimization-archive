@@ -1,0 +1,8 @@
+flowchart TD
+  A([Start]) --> B[Input params: SOURCE_DB, CLONE_BASE, N_CLONES]
+  B --> C{FOR i IN 1..N_CLONES}
+  C -->|each i| D[clone_name := CLONE_BASE || '_' || i]
+  D --> E[EXECUTE IMMEDIATE: CREATE OR REPLACE DATABASE clone_name CLONE SOURCE_DB]
+  E --> C
+  C -->|done| F[RETURN status message]
+  F --> G([End])
