@@ -1,0 +1,18 @@
+```mermaid
+flowchart LR
+  V[OPT_LAB_CLONE_3.RETAIL.V_ORDER_DETAILS]
+
+  O[OPT_LAB_CLONE_3.RETAIL.ORDERS]
+  C[OPT_LAB_CLONE_3.RETAIL.CUSTOMERS]
+  OI[OPT_LAB_CLONE_3.RETAIL.ORDER_ITEMS]
+  P[OPT_LAB_CLONE_3.RETAIL.PRODUCTS]
+  PAY[OPT_LAB_CLONE_3.RETAIL.PAYMENTS]
+
+  O --> V
+  C --> V
+  OI --> V
+  P --> V
+  PAY -. left join .-> V
+
+  %% NOTE: DRY_RUN validation failed due to reference to C.PHONE
+```
