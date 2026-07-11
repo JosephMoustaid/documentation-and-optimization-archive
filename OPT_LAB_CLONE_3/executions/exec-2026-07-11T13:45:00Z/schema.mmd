@@ -1,0 +1,9 @@
+%% Schema diagram (procedure context)
+%% Procedures do not have a tabular schema; this diagram captures parameters and return type.
+
+flowchart TB
+  P["PROCEDURE OPT_LAB_CLONE_3.RETAIL.SP_CLONE_DB"]
+  P --> A["PARAM SOURCE_DB: VARCHAR"]
+  P --> B["PARAM CLONE_BASE: VARCHAR"]
+  P --> C["PARAM N_CLONES: NUMBER"]
+  P --> R["RETURNS: STRING"]
