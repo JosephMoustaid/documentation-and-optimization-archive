@@ -1,0 +1,29 @@
+{
+  "execution_id": "exec-2026-07-11T15:15:00Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "DRY_RUN",
+  "total_objects": 1,
+  "successful_executions": 0,
+  "failed_executions": 0,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_3.RETAIL.V_DAILY_SALES",
+      "object_type": "VIEW",
+      "previous_definition": "create or replace view V_DAILY_SALES(\n\tORDER_DATE,\n\tDAILY_TOTAL,\n\tRUNNING_TOTAL\n) as\nSELECT\n    d1.order_date,\n    SUM(d1.order_total)                                AS daily_total,\n    (SELECT SUM(d2.order_total)\n       FROM orders d2\n      WHERE d2.order_date <= d1.order_date)            AS running_total\nFROM orders d1\nGROUP BY d1.order_date;",
+      "status": "VALIDATED",
+      "execution_time_ms": null,
+      "executed_sql": "CREATE OR REPLACE VIEW OPT_LAB_CLONE_3.RETAIL.V_DAILY_SALES AS\n/*\n    Optimizations / fixes:\n    - Replaced correlated subquery with an analytic (window) function for running total.\n      This avoids re-scanning ORDERS per row and lets Snowflake use a single pass\n      with efficient window aggregation.\n    - Fully qualified base table reference for stable name resolution.\n*/\nSELECT\n    d.order_date,\n    SUM(d.order_total) AS daily_total,\n    SUM(SUM(d.order_total))\n        OVER (ORDER BY d.order_date\n              ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_total\nFROM OPT_LAB_CLONE_3.RETAIL.orders AS d\nGROUP BY\n    d.order_date;",
+      "error": null,
+      "message": "Optimized VIEW DDL successfully validated via EXPLAIN in DRY_RUN mode. No changes were applied to OPT_LAB_CLONE_3.RETAIL.V_DAILY_SALES."
+    }
+  ],
+  "status": "SUCCESS",
+  "timestamp": "2026-07-11T15:15:00Z",
+  "metadata": {
+    "database": "OPT_LAB_CLONE_3",
+    "schema": "ALL",
+    "warehouse": "ADF_WH",
+    "status": "SUCCESS"
+  }
+}
