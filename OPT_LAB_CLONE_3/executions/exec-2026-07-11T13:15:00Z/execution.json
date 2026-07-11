@@ -1,0 +1,29 @@
+{
+  "execution_id": "exec-2026-07-11T13:15:00Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "DRY_RUN",
+  "total_objects": 1,
+  "successful_executions": 0,
+  "failed_executions": 0,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_3.RETAIL.V_PRODUCT_REVENUE_RANK",
+      "object_type": "VIEW",
+      "previous_definition": "create or replace view V_PRODUCT_REVENUE_RANK(\n\tPRODUCT_ID,\n\tTOTAL_REVENUE,\n\tREVENUE_RANK\n) as\nSELECT\n    product_id,\n    total_revenue,\n    RANK() OVER (ORDER BY total_revenue DESC) AS revenue_rank\nFROM (\n    SELECT\n        oi.product_id,\n        SUM(oi.quantity * oi.unit_price) AS total_revenue\n    FROM OPT_LAB_CLONE_3.RETAIL.order_items AS oi\n    GROUP BY oi.product_id\n);",
+      "status": "VALIDATED",
+      "execution_time_ms": null,
+      "executed_sql": "CREATE OR REPLACE VIEW OPT_LAB_CLONE_3.RETAIL.V_PRODUCT_REVENUE_RANK AS\nWITH product_revenue AS (\n    SELECT\n        oi.product_id,\n        /* Ensure numeric arithmetic uses a consistent NUMBER type */\n        SUM(oi.quantity * oi.unit_price)::NUMBER(38, 2) AS total_revenue\n    FROM OPT_LAB_CLONE_3.RETAIL.order_items AS oi\n    GROUP BY\n        oi.product_id\n)\nSELECT\n    product_id,\n    total_revenue,\n    RANK() OVER (\n        ORDER BY\n            total_revenue DESC,\n            product_id\n    ) AS revenue_rank\nFROM product_revenue;",
+      "error": null,
+      "message": "Optimized VIEW DDL successfully validated via EXPLAIN in DRY_RUN mode. No changes were applied to OPT_LAB_CLONE_3.RETAIL.V_PRODUCT_REVENUE_RANK."
+    }
+  ],
+  "status": "SUCCESS",
+  "timestamp": "2026-07-11T13:15:00Z",
+  "metadata": {
+    "database": "OPT_LAB_CLONE_3",
+    "schema": "ALL",
+    "warehouse": "ADF_WH",
+    "status": "SUCCESS"
+  }
+}
