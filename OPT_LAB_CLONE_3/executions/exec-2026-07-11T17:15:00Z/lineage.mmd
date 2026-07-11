@@ -1,0 +1,6 @@
+%% Lineage (best-effort from SQL text)
+flowchart LR
+  proc["RETAIL.SP_RECALC_ORDER_TOTALS"] --> orders[(orders.order_total)]
+  order_items[(order_items.quantity, order_items.unit_price)] --> proc
+  orders_id[(orders.order_id)] --> proc
+  oi_id[(order_items.order_id)] --> proc
