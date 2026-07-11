@@ -1,0 +1,12 @@
+flowchart TB
+  subgraph PROC[Procedure: OPT_LAB_CLONE_3.RETAIL.SP_CLONE_DB]
+    P1[SOURCE_DB : VARCHAR]
+    P2[CLONE_BASE : VARCHAR]
+    P3[N_CLONES : NUMBER]
+    R[RETURNS : STRING]
+  end
+
+  P1 --> PROC
+  P2 --> PROC
+  P3 --> PROC
+  PROC --> R
