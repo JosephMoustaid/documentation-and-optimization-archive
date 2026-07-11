@@ -1,0 +1,8 @@
+%% Schema diagram (minimal — validation failed before dependency introspection)
+flowchart TB
+  proc["PROCEDURE\nRETAIL.SP_RECALC_ORDER_TOTALS"]
+  orders[(orders)]
+  order_items[(order_items)]
+
+  proc --> orders
+  proc --> order_items
