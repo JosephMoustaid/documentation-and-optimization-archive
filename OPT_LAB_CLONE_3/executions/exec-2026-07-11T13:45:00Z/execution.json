@@ -1,0 +1,29 @@
+{
+  "execution_id": "exec-2026-07-11T13:45:00Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "DRY_RUN",
+  "total_objects": 1,
+  "successful_executions": 0,
+  "failed_executions": 0,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_3.RETAIL.SP_CLONE_DB",
+      "object_type": "PROCEDURE",
+      "previous_definition": "CREATE OR REPLACE PROCEDURE \"SP_CLONE_DB\"(\"SOURCE_DB\" VARCHAR, \"CLONE_BASE\" VARCHAR, \"N_CLONES\" NUMBER(38,0))\nRETURNS VARCHAR\nLANGUAGE SQL\nEXECUTE AS OWNER\nAS '\nDECLARE\n    i           NUMBER DEFAULT 1;\n    clone_name  STRING;\nBEGIN\n    WHILE (i <= n_clones) DO\n        clone_name := clone_base || ''_'' || i::STRING;\n        EXECUTE IMMEDIATE\n            ''CREATE OR REPLACE DATABASE '' || clone_name ||\n            '' CLONE '' || source_db;\n        i := i + 1;\n    END WHILE;\n    RETURN ''Created '' || n_clones || '' clones of '' || source_db\n           || '' named '' || clone_base || ''_1 .. '' || clone_base || ''_'' || n_clones;\nEND;\n';",
+      "status": "VALIDATED",
+      "execution_time_ms": null,
+      "executed_sql": "CREATE OR REPLACE PROCEDURE OPT_LAB_CLONE_3.RETAIL.SP_CLONE_DB(\n    SOURCE_DB   VARCHAR,\n    CLONE_BASE  VARCHAR,\n    N_CLONES    NUMBER\n)\nRETURNS STRING\nLANGUAGE SQL\nAS\n$$\nDECLARE\n    v_cmd   STRING;\nBEGIN\n    -- Build a single dynamic statement that contains all CREATE DATABASE commands\n    -- for the requested number of clones. This removes the explicit procedural loop.\n    SELECT LISTAGG(\n               'CREATE OR REPLACE DATABASE ' ||\n               CLONE_BASE || '_' || seq::STRING ||\n               ' CLONE ' || SOURCE_DB || ';',\n               ' '\n           )\n    INTO :v_cmd\n    FROM (\n        SELECT SEQ4() + 1 AS seq\n        FROM TABLE(GENERATOR(ROWCOUNT => :N_CLONES))\n    );\n\n    -- Execute the concatenated CREATE DATABASE statements\n    EXECUTE IMMEDIATE :v_cmd;\n\n    RETURN 'Created ' || N_CLONES || ' clones of ' || SOURCE_DB\n           || ' named ' || CLONE_BASE || '1 .. ' || CLONE_BASE || '' || N_CLONES;\nEND;\n$$;",
+      "error": null,
+      "message": "Optimized PROCEDURE DDL successfully validated via EXPLAIN in DRY_RUN mode. No changes were applied to OPT_LAB_CLONE_3.RETAIL.SP_CLONE_DB."
+    }
+  ],
+  "status": "SUCCESS",
+  "timestamp": "2026-07-11T13:45:00Z",
+  "metadata": {
+    "database": "OPT_LAB_CLONE_3",
+    "schema": "ALL",
+    "warehouse": "ADF_WH",
+    "status": "SUCCESS"
+  }
+}
