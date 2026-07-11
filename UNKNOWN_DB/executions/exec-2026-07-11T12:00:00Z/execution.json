@@ -1,0 +1,23 @@
+{
+  "execution_id": "exec-2026-07-11T12:00:00Z",
+  "warehouse": null,
+  "execution_mode": "DRY_RUN",
+  "total_objects": 0,
+  "successful_executions": 0,
+  "failed_executions": 0,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": null,
+      "object_type": null,
+      "previous_definition": null,
+      "status": "FAILED",
+      "execution_time_ms": null,
+      "executed_sql": "-- No object definition was provided in 'obje', so there is nothing to optimize.\n-- Please pass a specific object (VIEW/PROCEDURE definition text) so an\n-- optimized version can be generated.",
+      "error": "No executable DDL was provided. The supplied text consists only of comments and does not contain a CREATE OR REPLACE statement.",
+      "message": "No validation or changes were performed. Please provide the full CREATE OR REPLACE VIEW/PROCEDURE DDL of the object you want updated so the optimized version can be validated or applied."
+    }
+  ],
+  "status": "FAILED",
+  "timestamp": "2026-07-11T12:00:00Z"
+}
