@@ -1,0 +1,14 @@
+%% Lineage diagram (procedure context)
+%% Captures high-level effects: creates cloned databases from a source database.
+
+flowchart LR
+  SRC[(SOURCE_DB)] -->|CLONE| DB1[(CLONE_BASE_1)]
+  SRC -->|CLONE| DBN[(CLONE_BASE_N)]
+
+  subgraph Procedure
+    P["SP_CLONE_DB"]
+  end
+
+  P -. uses .-> SRC
+  P -. creates .-> DB1
+  P -. creates .-> DBN
