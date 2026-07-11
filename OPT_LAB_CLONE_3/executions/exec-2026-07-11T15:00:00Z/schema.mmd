@@ -1,0 +1,13 @@
+erDiagram
+    OPT_LAB_CLONE_3__RETAIL__CUSTOMERS {
+        * VARIANT "c.* (all customer columns)"
+        NUMBER CUSTOMER_ID
+    }
+
+    OPT_LAB_CLONE_3__RETAIL__ORDERS {
+        NUMBER CUSTOMER_ID
+        NUMBER ORDER_TOTAL
+        TIMESTAMP_NTZ ORDER_DATE
+    }
+
+    OPT_LAB_CLONE_3__RETAIL__CUSTOMERS ||--o{ OPT_LAB_CLONE_3__RETAIL__ORDERS : "CUSTOMER_ID"
