@@ -1,0 +1,8 @@
+```mermaid
+flowchart TD
+  A([Start]) --> B[Input params: CAT, PCT]
+  B --> C[UPDATE PRODUCTS\nSET UNIT_PRICE = ROUND(UNIT_PRICE * (1 + PCT/100), 2)\nWHERE CATEGORY = CAT]
+  C --> D[n := SQLROWCOUNT]
+  D --> E[RETURN 'Raised price on ' || n || ' products (set-based).']
+  E --> F([End])
+```
