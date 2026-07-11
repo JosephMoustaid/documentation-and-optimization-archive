@@ -1,0 +1,4 @@
+-- Previous definition for OPT_LAB_CLONE_3.RETAIL.SP_APPLY_PRICE_INCREASE
+--
+-- NOTE: Previous definition could not be retrieved (GET_DDL returned null for the provided signature).
+-- Recorded as NULL in execution payload.
