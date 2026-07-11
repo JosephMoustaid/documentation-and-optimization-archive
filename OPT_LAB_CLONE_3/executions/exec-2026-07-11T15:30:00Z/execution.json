@@ -1,0 +1,29 @@
+{
+  "execution_id": "exec-2026-07-11T15:30:00Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "DRY_RUN",
+  "total_objects": 1,
+  "successful_executions": 0,
+  "failed_executions": 1,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_3.RETAIL.V_ORDER_DETAILS",
+      "object_type": "VIEW",
+      "previous_definition": "create or replace view V_ORDER_DETAILS(\n\tORDER_ID,\n\tORDER_DATE,\n\tSTATUS,\n\tCUSTOMER_ID,\n\tFIRST_NAME,\n\tLAST_NAME,\n\tEMAIL,\n\tCOUNTRY,\n\tSIGNUP_DATE,\n\tIS_ACTIVE,\n\tLIFETIME_VALUE,\n\tPRODUCT_ID,\n\tQUANTITY,\n\tUNIT_PRICE,\n\tPRODUCT_NAME,\n\tCATEGORY,\n\tPAYMENT_AMOUNT,\n\tPAYMENT_METHOD,\n\tPAYMENT_STATUS\n) as\nSELECT\n    o.order_id,\n    o.order_date,\n    o.status,\n    c.*,                                               -- pulls every customer column\n    oi.product_id,\n    oi.quantity,\n    oi.unit_price,\n    p.product_name,\n    p.category,\n    pay.amount        AS payment_amount,\n    pay.method        AS payment_method,\n    pay.status        AS payment_status\nFROM orders      o\nJOIN customers   c   ON c.customer_id = o.customer_id\nJOIN order_items oi  ON oi.order_id   = o.order_id\nJOIN products    p   ON p.product_id  = oi.product_id\nLEFT JOIN payments pay ON pay.order_id = o.order_id;",
+      "status": "FAILED",
+      "execution_time_ms": null,
+      "executed_sql": "CREATE OR REPLACE VIEW OPT_LAB_CLONE_3.RETAIL.V_ORDER_DETAILS AS\n/*\n    Optimizations / fixes:\n    - Fully qualified base objects for stable resolution.\n    - Replaced `c.*` with an explicit, curated list of customer columns to reduce\n      scan size and avoid schema-change fragility.\n    - Added explicit column aliases for clarity and to avoid name collisions.\n*/\nSELECT\n    o.order_id,\n    o.order_date,\n    o.status               AS order_status,\n\n    -- Explicit customer columns instead of c.*\n    c.customer_id,\n    c.first_name,\n    c.last_name,\n    c.email,\n    c.phone,\n    c.city,\n    c.state,\n    c.country,\n\n    oi.product_id,\n    oi.quantity,\n    oi.unit_price,\n\n    p.product_name,\n    p.category,\n\n    pay.amount             AS payment_amount,\n    pay.method             AS payment_method,\n    pay.status             AS payment_status\nFROM OPT_LAB_CLONE_3.RETAIL.orders       AS o\nJOIN OPT_LAB_CLONE_3.RETAIL.customers    AS c\n  ON c.customer_id = o.customer_id\nJOIN OPT_LAB_CLONE_3.RETAIL.order_items  AS oi\n  ON oi.order_id = o.order_id\nJOIN OPT_LAB_CLONE_3.RETAIL.products     AS p\n  ON p.product_id = oi.product_id\nLEFT JOIN OPT_LAB_CLONE_3.RETAIL.payments AS pay\n  ON pay.order_id = o.order_id;",
+      "error": "SQL compilation error: error line 19 at position 4 invalid identifier 'C.PHONE'",
+      "message": "Validation FAILED in DRY_RUN mode. The optimized VIEW definition references one or more customer columns (for example C.PHONE) that do not exist in OPT_LAB_CLONE_3.RETAIL.CUSTOMERS. Remove or correct the invalid column references, then re-run validation."
+    }
+  ],
+  "status": "FAILED",
+  "timestamp": "2026-07-11T15:30:00Z",
+  "metadata": {
+    "database": "OPT_LAB_CLONE_3",
+    "schema": "ALL",
+    "warehouse": "ADF_WH",
+    "status": "SUCCESS"
+  }
+}
