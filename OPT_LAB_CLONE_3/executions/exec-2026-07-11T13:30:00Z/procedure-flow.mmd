@@ -1,0 +1,8 @@
+%% Procedure flow — OPT_LAB_CLONE_3.RETAIL.SP_APPLY_PRICE_INCREASE
+
+flowchart TD
+  A([Start]) --> B[Input params: CAT, PCT]
+  B --> C[UPDATE RETAIL.PRODUCTS\nSET unit_price = ROUND(unit_price*(1+PCT/100),2)\nWHERE category = CAT]
+  C --> D[Get affected rows\nSELECT ROW_COUNT FROM RESULT_SCAN(LAST_QUERY_ID())]
+  D --> E[RETURN message with rows updated]
+  E --> F([End])
