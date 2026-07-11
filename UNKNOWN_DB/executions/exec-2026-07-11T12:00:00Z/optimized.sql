@@ -1,0 +1,3 @@
+-- No object definition was provided in 'obje', so there is nothing to optimize.
+-- Please pass a specific object (VIEW/PROCEDURE definition text) so an
+-- optimized version can be generated.
