@@ -1,0 +1,29 @@
+{
+  "execution_id": "exec-2026-07-11T17:15:00Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "DRY_RUN",
+  "total_objects": 1,
+  "successful_executions": 0,
+  "failed_executions": 1,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "RETAIL.SP_RECALC_ORDER_TOTALS",
+      "object_type": "PROCEDURE",
+      "previous_definition": null,
+      "status": "FAILED",
+      "execution_time_ms": null,
+      "executed_sql": "CREATE OR REPLACE PROCEDURE RETAIL.SP_RECALC_ORDER_TOTALS()\nRETURNS STRING\nLANGUAGE SQL\nEXECUTE AS OWNER\nAS\n$$\nDECLARE\n    v_rows_updated NUMBER;\nBEGIN\n    -- Set-based recomputation of all order totals in one statement\n    UPDATE orders o\n    SET order_total = COALESCE(\n        (\n            SELECT SUM(oi.quantity * oi.unit_price)\n            FROM order_items oi\n            WHERE oi.order_id = o.order_id\n        ),\n        0\n    );\n\n    -- ROW_COUNT gives number of rows affected by the last DML\n    v_rows_updated := SQLROWCOUNT;\n\n    RETURN 'Recalculated ' || v_rows_updated || ' order totals (set-based optimized).';\nEND;\n$$;",
+      "error": "SQL validation failed in DRY_RUN mode: Unable to run the CREATE PROCEDURE command because no database was specified for the RETAIL schema. A fully qualified name (e.g., OPT_LAB_CLONE_3.RETAIL.SP_RECALC_ORDER_TOTALS) or an explicit database context is required.",
+      "message": "Validation FAILED. The optimized PROCEDURE DDL could not be validated because the RETAIL schema was referenced without an active database context. Please update the definition to use a fully qualified name (e.g., CREATE OR REPLACE PROCEDURE OPT_LAB_CLONE_3.RETAIL.SP_RECALC_ORDER_TOTALS ...) or ensure the appropriate database is set before execution, then re-run."
+    }
+  ],
+  "status": "FAILED",
+  "timestamp": "2026-07-11T17:15:00Z",
+  "metadata": {
+    "database": "OPT_LAB_CLONE_3",
+    "schema": "ALL",
+    "warehouse": "ADF_WH",
+    "status": "SUCCESS"
+  }
+}
