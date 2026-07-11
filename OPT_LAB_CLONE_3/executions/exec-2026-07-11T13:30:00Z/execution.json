@@ -1,0 +1,29 @@
+{
+  "execution_id": "exec-2026-07-11T13:30:00Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "DRY_RUN",
+  "total_objects": 1,
+  "successful_executions": 0,
+  "failed_executions": 0,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_3.RETAIL.SP_APPLY_PRICE_INCREASE",
+      "object_type": "PROCEDURE",
+      "previous_definition": null,
+      "status": "VALIDATED",
+      "execution_time_ms": null,
+      "executed_sql": "CREATE OR REPLACE PROCEDURE OPT_LAB_CLONE_3.RETAIL.SP_APPLY_PRICE_INCREASE(\n    CAT VARCHAR,\n    PCT FLOAT\n)\nRETURNS STRING\nLANGUAGE SQL\nAS\n$$\nDECLARE\n    v_rows_updated NUMBER := 0;\nBEGIN\n    -- Set-based price increase for all products in the given category\n    UPDATE OPT_LAB_CLONE_3.RETAIL.products\n    SET unit_price = ROUND(unit_price * (1 + :PCT / 100.0), 2)\n    WHERE category = :CAT;\n\n    -- Get number of affected rows from the last DML statement\n    SELECT ROW_COUNT\n    INTO :v_rows_updated\n    FROM TABLE(RESULT_SCAN(LAST_QUERY_ID()));\n\n    RETURN 'Raised price on ' || v_rows_updated || ' products (set-based, optimized).';\nEND;\n$$;",
+      "error": null,
+      "message": "Optimized PROCEDURE DDL successfully validated via EXPLAIN in DRY_RUN mode. No changes were applied to OPT_LAB_CLONE_3.RETAIL.SP_APPLY_PRICE_INCREASE. Previous definition could not be retrieved with GET_DDL using the provided signature and is recorded as null."
+    }
+  ],
+  "status": "SUCCESS",
+  "timestamp": "2026-07-11T13:30:00Z",
+  "metadata": {
+    "database": "OPT_LAB_CLONE_3",
+    "schema": "ALL",
+    "warehouse": "ADF_WH",
+    "status": "SUCCESS"
+  }
+}
