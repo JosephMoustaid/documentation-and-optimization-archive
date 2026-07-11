@@ -1,0 +1,7 @@
+flowchart LR
+  Caller((Caller)) --> PROC[SP_CLONE_DB]
+
+  PROC -->|EXECUTE IMMEDIATE| SQL1["CREATE OR REPLACE DATABASE <clone_name> CLONE <SOURCE_DB>"]
+
+  note1[[Dynamic SQL: database name and source DB are provided at runtime; static dependency lineage cannot be resolved.]]
+  SQL1 -.-> note1
