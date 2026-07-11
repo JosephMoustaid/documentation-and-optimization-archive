@@ -1,0 +1,15 @@
+```mermaid
+erDiagram
+  ORDERS {
+    DATE ORDER_DATE
+    NUMBER ORDER_TOTAL
+  }
+
+  V_DAILY_SALES {
+    DATE ORDER_DATE
+    NUMBER DAILY_TOTAL
+    NUMBER RUNNING_TOTAL
+  }
+
+  ORDERS ||--o{ V_DAILY_SALES : aggregates
+```
