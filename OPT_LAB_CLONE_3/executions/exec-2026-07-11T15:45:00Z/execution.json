@@ -1,0 +1,29 @@
+{
+  "execution_id": "exec-2026-07-11T15:45:00Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "DRY_RUN",
+  "total_objects": 1,
+  "successful_executions": 0,
+  "failed_executions": 0,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_3.RETAIL.V_CUSTOMER_ORDER_SUMMARY",
+      "object_type": "VIEW",
+      "previous_definition": "create or replace view V_CUSTOMER_ORDER_SUMMARY(\n\tCUSTOMER_ID,\n\tFIRST_NAME,\n\tLAST_NAME,\n\tEMAIL,\n\tCOUNTRY,\n\tSIGNUP_DATE,\n\tIS_ACTIVE,\n\tLIFETIME_VALUE,\n\tNUM_ORDERS,\n\tTOTAL_SPENT,\n\tLAST_ORDER\n) as\nSELECT\n  c.*,\n  (SELECT COUNT(*) FROM OPT_LAB_CLONE_3.RETAIL.orders o WHERE o.customer_id = c.customer_id)          AS num_orders,\n  (SELECT SUM(o.order_total) FROM OPT_LAB_CLONE_3.RETAIL.orders o WHERE o.customer_id = c.customer_id) AS total_spent,\n  (SELECT MAX(o.order_date) FROM OPT_LAB_CLONE_3.RETAIL.orders o WHERE o.customer_id = c.customer_id) AS last_order\nFROM OPT_LAB_CLONE_3.RETAIL.customers c;",
+      "status": "VALIDATED",
+      "execution_time_ms": null,
+      "executed_sql": "CREATE OR REPLACE VIEW OPT_LAB_CLONE_3.RETAIL.V_CUSTOMER_ORDER_SUMMARY AS\n/*\n    Optimizations / fixes:\n    - Replaced three correlated scalar subqueries with a single aggregated subquery\n      over ORDERS grouped by CUSTOMER_ID to avoid repeated scans and per-row subquery\n      evaluation.\n    - Fully qualified base tables in OPT_LAB_CLONE_3.RETAIL for stable name resolution.\n    - Replaced `c.*` with an explicit list of key customer columns to reduce scan size\n      and avoid schema-change fragility.\n    - Used LEFT JOIN so customers with zero orders are preserved; aggregated\n      metrics will be NULL (or 0 when wrapped in COALESCE) in that case.\n*/\nSELECT\n    c.customer_id,\n    c.first_name,\n    c.last_name,\n    c.email,\n    c.country,\n    c.signup_date,\n    c.is_active,\n    c.lifetime_value,\n\n    COALESCE(o_agg.num_orders, 0)   AS num_orders,\n    COALESCE(o_agg.total_spent, 0)  AS total_spent,\n    o_agg.last_order                AS last_order\nFROM OPT_LAB_CLONE_3.RETAIL.customers AS c\nLEFT JOIN (\n    SELECT\n        o.customer_id,\n        COUNT(*)           AS num_orders,\n        SUM(o.order_total) AS total_spent,\n        MAX(o.order_date)  AS last_order\n    FROM OPT_LAB_CLONE_3.RETAIL.orders AS o\n    GROUP BY o.customer_id\n) AS o_agg\n    ON o_agg.customer_id = c.customer_id;",
+      "error": null,
+      "message": "Optimized VIEW DDL successfully validated via EXPLAIN in DRY_RUN mode. No changes were applied to OPT_LAB_CLONE_3.RETAIL.V_CUSTOMER_ORDER_SUMMARY."
+    }
+  ],
+  "status": "SUCCESS",
+  "timestamp": "2026-07-11T15:45:00Z",
+  "metadata": {
+    "database": "OPT_LAB_CLONE_3",
+    "schema": "ALL",
+    "warehouse": "ADF_WH",
+    "status": "SUCCESS"
+  }
+}
