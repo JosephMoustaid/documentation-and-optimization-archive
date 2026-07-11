@@ -1,0 +1,13 @@
+erDiagram
+  ORDERS {
+    date ORDER_DATE
+    number ORDER_TOTAL
+  }
+
+  V_DAILY_SALES {
+    date ORDER_DATE
+    number DAILY_TOTAL
+    number RUNNING_TOTAL
+  }
+
+  ORDERS ||--o{ V_DAILY_SALES : aggregates
