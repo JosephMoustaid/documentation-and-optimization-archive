@@ -1,0 +1,11 @@
+```mermaid
+flowchart LR
+  subgraph DB[OPT_LAB_CLONE_3]
+    subgraph SCH[RETAIL]
+      PROC[SP_APPLY_PRICE_INCREASE (PROCEDURE)]
+      TPROD[(PRODUCTS)]
+    end
+  end
+
+  PROC -->|UPDATE| TPROD
+```
