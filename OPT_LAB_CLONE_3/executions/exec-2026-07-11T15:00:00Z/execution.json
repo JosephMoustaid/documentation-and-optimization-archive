@@ -1,0 +1,29 @@
+{
+  "execution_id": "exec-2026-07-11T15:00:00Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "DRY_RUN",
+  "total_objects": 1,
+  "successful_executions": 0,
+  "failed_executions": 0,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_3.RETAIL.V_CUSTOMER_ORDER_SUMMARY",
+      "object_type": "VIEW",
+      "previous_definition": "create or replace view V_CUSTOMER_ORDER_SUMMARY(\n\tCUSTOMER_ID,\n\tFIRST_NAME,\n\tLAST_NAME,\n\tEMAIL,\n\tCOUNTRY,\n\tSIGNUP_DATE,\n\tIS_ACTIVE,\n\tLIFETIME_VALUE,\n\tNUM_ORDERS,\n\tTOTAL_SPENT,\n\tLAST_ORDER\n) as\nSELECT\n    c.*,\n    (SELECT COUNT(*)      FROM orders o WHERE o.customer_id = c.customer_id) AS num_orders,\n    (SELECT SUM(order_total) FROM orders o WHERE o.customer_id = c.customer_id) AS total_spent,\n    (SELECT MAX(order_date)  FROM orders o WHERE o.customer_id = c.customer_id) AS last_order\nFROM customers c;",
+      "status": "VALIDATED",
+      "execution_time_ms": null,
+      "executed_sql": "CREATE OR REPLACE VIEW OPT_LAB_CLONE_3.RETAIL.V_CUSTOMER_ORDER_SUMMARY AS\n/*\n    Optimizations / fixes:\n    - Replaced invalid \"c.\" with \"c.*\" to project all customer columns.\n    - Replaced three correlated scalar subqueries with a single set-based\n      aggregation over ORDERS grouped by CUSTOMER_ID.\n    - Joined aggregated orders back to CUSTOMERS using a LEFT JOIN to\n      preserve customers with no orders.\n    - Fully qualified base table references for stable name resolution.\n*/\nSELECT\n    c.*,\n    o_agg.num_orders,\n    o_agg.total_spent,\n    o_agg.last_order\nFROM OPT_LAB_CLONE_3.RETAIL.customers AS c\nLEFT JOIN (\n    SELECT\n        o.customer_id,\n        COUNT(*)           AS num_orders,\n        SUM(o.order_total) AS total_spent,\n        MAX(o.order_date)  AS last_order\n    FROM OPT_LAB_CLONE_3.RETAIL.orders AS o\n    GROUP BY\n        o.customer_id\n) AS o_agg\n    ON o_agg.customer_id = c.customer_id;",
+      "error": null,
+      "message": "Optimized VIEW DDL successfully validated via EXPLAIN in DRY_RUN mode. No changes were applied to OPT_LAB_CLONE_3.RETAIL.V_CUSTOMER_ORDER_SUMMARY."
+    }
+  ],
+  "status": "SUCCESS",
+  "timestamp": "2026-07-11T15:00:00Z",
+  "metadata": {
+    "database": "OPT_LAB_CLONE_3",
+    "schema": "ALL",
+    "warehouse": "ADF_WH",
+    "status": "SUCCESS"
+  }
+}
