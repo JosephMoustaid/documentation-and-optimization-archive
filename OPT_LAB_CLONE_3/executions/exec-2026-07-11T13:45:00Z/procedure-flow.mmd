@@ -1,0 +1,9 @@
+%% Procedure flow for OPT_LAB_CLONE_3.RETAIL.SP_CLONE_DB (optimized)
+
+flowchart TD
+  S([Start]) --> P["Read params: SOURCE_DB, CLONE_BASE, N_CLONES"]
+  P --> G["Generate sequence 1..N_CLONES via GENERATOR"]
+  G --> L["LISTAGG builds v_cmd with N CREATE DATABASE ... CLONE ... statements"]
+  L --> E["EXECUTE IMMEDIATE v_cmd"]
+  E --> R["Return summary STRING"]
+  R --> X([End])
