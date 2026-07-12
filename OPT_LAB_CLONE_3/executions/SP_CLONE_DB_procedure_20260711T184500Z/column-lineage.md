@@ -1,5 +1,3 @@
 # Column Lineage
 
-Not applicable.
-
-This execution optimized a **procedure** that performs DDL operations (database cloning) and does not define a relational projection with columns.
+Not applicable for this stored procedure (no table/view column projections).

@@ -1,24 +1,20 @@
 # Optimization Report
 
-## Execution context
+## Object
+- URN: `OPT_LAB_CLONE_3.RETAIL.SP_CLONE_DB`
+- Type: `procedure`
 
-- **Execution ID:** exec-2026-07-11T18:45:00Z
-- **Mode:** DRY_RUN
-- **Status:** VALIDATED
-- **Object:** `OPT_LAB_CLONE_3.RETAIL.SP_CLONE_DB` (procedure)
+## Execution
+- Execution ID: `exec-2026-07-11T18:45:00Z`
+- Timestamp: `2026-07-11T18:45:00Z`
+- Warehouse: `ADF_WH`
+- Mode: `DRY_RUN`
+- Result: `VALIDATED`
 
-## Summary of changes (previous → optimized)
+## Changes applied
+- None (DRY_RUN validation only).
 
-1. **Promoted to full CREATE OR REPLACE PROCEDURE DDL** including signature, language, and body wrapper (`$$ ... $$`).
-2. **Identifier safety:** dynamic SQL now uses `IDENTIFIER(...)` for `clone_name` and `SOURCE_DB` when building DDL.
-3. **Return string corrected:** includes underscore and proper range formatting: `CLONE_BASE_1 .. CLONE_BASE_N`.
-4. **Readability improvements:** consistent casing and comments.
-
-## Risk / Notes
-
-- Procedure performs DDL (`CREATE OR REPLACE DATABASE ... CLONE ...`). Ensure the executing role has privileges.
-- `CREATE OR REPLACE DATABASE` is destructive for existing DBs with the same name.
-
-## Outcome
-
-Validated successfully in DRY_RUN; no changes applied.
+## Notable improvements in optimized DDL
+- Added explicit procedure signature and wrapper `CREATE OR REPLACE PROCEDURE ... AS $$ ... $$`.
+- Uses `IDENTIFIER()` for `clone_name` and `SOURCE_DB` inside dynamic SQL to reduce identifier injection issues.
+- Improved return message formatting (underscore and range string corrected).

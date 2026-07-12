@@ -1,3 +1,4 @@
+-- Previous definition for OPT_LAB_CLONE_3.RETAIL.SP_CLONE_DB
 DECLARE
  i NUMBER DEFAULT 1;
  clone_name STRING;

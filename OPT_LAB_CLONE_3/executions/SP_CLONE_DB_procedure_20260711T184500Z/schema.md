@@ -1,11 +1,11 @@
-# Schema / Signature
+# Schema
 
-## Object
+- Database: `OPT_LAB_CLONE_3`
+- Schema: `RETAIL`
+- Object: `SP_CLONE_DB`
+- Type: `procedure`
 
-- **URN:** `OPT_LAB_CLONE_3.RETAIL.SP_CLONE_DB`
-- **Type:** procedure
-
-## Signature (optimized DDL)
+Procedure signature (optimized):
 
 ```sql
 CREATE OR REPLACE PROCEDURE OPT_LAB_CLONE_3.RETAIL.SP_CLONE_DB(
@@ -17,15 +17,3 @@ RETURNS STRING
 LANGUAGE SQL
 ...
 ```
-
-## Parameters
-
-| Name | Type | Description |
-|---|---|---|
-| `SOURCE_DB` | VARCHAR | Source database to clone. |
-| `CLONE_BASE` | VARCHAR | Base name used for cloned databases. |
-| `N_CLONES` | NUMBER | Number of clones to create. |
-
-## Returns
-
-- `STRING`: summary message indicating how many clones were created and the naming pattern.
