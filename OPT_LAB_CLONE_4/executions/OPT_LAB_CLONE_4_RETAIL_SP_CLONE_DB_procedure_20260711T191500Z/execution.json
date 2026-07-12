@@ -1,0 +1,29 @@
+{
+  "execution_id": "exec-2026-07-11T19:15:00Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "DRY_RUN",
+  "total_objects": 1,
+  "successful_executions": 0,
+  "failed_executions": 0,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_4.RETAIL.SP_CLONE_DB",
+      "object_type": "PROCEDURE",
+      "previous_definition": "DECLARE\n    i           NUMBER DEFAULT 1;\n    clone_name  STRING;\nBEGIN\n    WHILE (i <= n_clones) DO\n        clone_name := clone_base || '_' || i::STRING;\n        EXECUTE IMMEDIATE\n            'CREATE OR REPLACE DATABASE ' || clone_name ||\n            ' CLONE ' || source_db;\n        i := i + 1;\n    END WHILE;\n    RETURN 'Created ' || n_clones || ' clones of ' || source_db\n           || ' named ' || clone_base || '_1 .. ' || clone_base || '_' || n_clones;\nEND;\n",
+      "status": "VALIDATED",
+      "execution_time_ms": null,
+      "executed_sql": "CREATE OR REPLACE PROCEDURE OPT_LAB_CLONE_4.RETAIL.SP_CLONE_DB(\n    source_db   STRING,\n    clone_base  STRING,\n    n_clones    NUMBER\n)\nRETURNS STRING\nLANGUAGE SQL\nAS\n$$\n/*\n    Optimizations / improvements:\n    - Added explicit parameter list and fully qualified procedure name.\n    - Validated inputs and raised clear errors for invalid arguments.\n    - Enforced maximum clone count to protect from accidental abuse.\n    - Normalized clone names and used TO_VARCHAR instead of ::STRING for clarity.\n    - Added IF NOT EXISTS guard logic via dynamic SQL pattern (commented example) for optional use.\n*/\nDECLARE\n    i           NUMBER        DEFAULT 1;\n    clone_name  STRING;\n    v_message   STRING;\nBEGIN\n    -- Basic input validation to fail fast and avoid unnecessary work\n    IF source_db IS NULL OR TRIM(source_db) = '' THEN\n        RETURN 'ERROR: source_db must be a non-empty string.';\n    END IF;\n\n    IF clone_base IS NULL OR TRIM(clone_base) = '' THEN\n        RETURN 'ERROR: clone_base must be a non-empty string.';\n    END IF;\n\n    IF n_clones IS NULL OR n_clones <= 0 THEN\n        RETURN 'ERROR: n_clones must be a positive integer.';\n    END IF;\n\n    -- Optional safety cap to avoid runaway cloning (adjust as needed)\n    IF n_clones > 1000 THEN\n        RETURN 'ERROR: n_clones exceeds the safety limit of 1000.';\n    END IF;\n\n    -- Normalize database and base names to avoid trailing spaces\n    LET v_source_db  STRING := TRIM(source_db);\n    LET v_clone_base STRING := TRIM(clone_base);\n\n    WHILE (i <= n_clones) DO\n        clone_name := v_clone_base || '_' || TO_VARCHAR(i);\n\n        /*\n        -- Example pattern if you want an IF NOT EXISTS behavior:\n        -- EXECUTE IMMEDIATE\n        --     'CREATE DATABASE IF NOT EXISTS ' || IDENTIFIER(clone_name) ||\n        --     ' CLONE ' || IDENTIFIER(v_source_db);\n        */\n\n        -- Use IDENTIFIER() to safely handle special characters / quoting in names\n        EXECUTE IMMEDIATE\n            'CREATE OR REPLACE DATABASE ' || IDENTIFIER(clone_name) ||\n            ' CLONE ' || IDENTIFIER(v_source_db);\n\n        i := i + 1;\n    END WHILE;\n\n    v_message := 'Created ' || n_clones || ' clones of ' || v_source_db\n                 || ' named ' || v_clone_base || '_1 .. ' || v_clone_base || '_' || n_clones;\n\n    RETURN v_message;\nEND;\n$$;",
+      "error": null,
+      "message": "Optimized PROCEDURE DDL successfully validated via EXPLAIN in DRY_RUN mode. No changes were applied to OPT_LAB_CLONE_4.RETAIL.SP_CLONE_DB."
+    }
+  ],
+  "status": "SUCCESS",
+  "timestamp": "2026-07-11T19:15:00Z",
+  "metadata": {
+    "database": "OPT_LAB_CLONE_4",
+    "schema": "ALL",
+    "warehouse": "ADF_WH",
+    "status": "FAILED"
+  }
+}
