@@ -1,0 +1,29 @@
+{
+  "execution_id": "exec-2026-07-11T17:45:00Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "DRY_RUN",
+  "total_objects": 1,
+  "successful_executions": 0,
+  "failed_executions": 0,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_3.RETAIL.V_DAILY_SALES",
+      "object_type": "VIEW",
+      "previous_definition": "create or replace view V_DAILY_SALES(\n\tORDER_DATE,\n\tDAILY_TOTAL,\n\tRUNNING_TOTAL\n) as\nSELECT\n    d1.order_date,\n    SUM(d1.order_total)                                AS daily_total,\n    (SELECT SUM(d2.order_total)\n       FROM orders d2\n      WHERE d2.order_date <= d1.order_date)            AS running_total\nFROM orders d1\nGROUP BY d1.order_date;",
+      "status": "VALIDATED",
+      "execution_time_ms": null,
+      "executed_sql": "CREATE OR REPLACE VIEW OPT_LAB_CLONE_3.RETAIL.V_DAILY_SALES AS\nSELECT\n    order_date,\n    daily_total,\n    SUM(daily_total) OVER (\n        ORDER BY order_date\n        ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW\n    ) AS running_total\nFROM (\n    SELECT\n        d1.order_date,\n        SUM(d1.order_total) AS daily_total\n    FROM OPT_LAB_CLONE_3.RETAIL.ORDERS d1\n    GROUP BY d1.order_date\n) agg;",
+      "error": null,
+      "message": "Optimized VIEW DDL successfully validated via EXPLAIN in DRY_RUN mode. No changes were applied to OPT_LAB_CLONE_3.RETAIL.V_DAILY_SALES."
+    }
+  ],
+  "status": "SUCCESS",
+  "timestamp": "2026-07-11T17:45:00Z",
+  "metadata": {
+    "database": "OPT_LAB_CLONE_3",
+    "schema": "ALL",
+    "warehouse": "ADF_WH",
+    "status": "SUCCESS"
+  }
+}
