@@ -1,0 +1,23 @@
+{
+  "execution_id": "exec-2026-07-11T18:45:00Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "DRY_RUN",
+  "total_objects": 1,
+  "successful_executions": 0,
+  "failed_executions": 0,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_3.RETAIL.SP_CLONE_DB",
+      "object_type": "PROCEDURE",
+      "previous_definition": "DECLARE\n i NUMBER DEFAULT 1;\n clone_name STRING;\nBEGIN\n WHILE (i <= n_clones) DO\n clone_name := clone_base || '_' || i::STRING;\n EXECUTE IMMEDIATE\n 'CREATE OR REPLACE DATABASE ' || clone_name ||\n ' CLONE ' || source_db;\n i := i + 1;\n END WHILE;\n RETURN 'Created ' || n_clones || ' clones of ' || source_db\n || ' named ' || clone_base || '1 .. ' || clone_base || '' || n_clones;\nEND;",
+      "status": "VALIDATED",
+      "execution_time_ms": null,
+      "executed_sql": "CREATE OR REPLACE PROCEDURE OPT_LAB_CLONE_3.RETAIL.SP_CLONE_DB(\n    SOURCE_DB  VARCHAR,\n    CLONE_BASE VARCHAR,\n    N_CLONES   NUMBER\n)\nRETURNS STRING\nLANGUAGE SQL\nAS\n$$\nDECLARE\n    i          NUMBER  DEFAULT 1;\n    clone_name STRING;\nBEGIN\n    -- Loop to create the requested number of clones\n    WHILE (i <= N_CLONES) DO\n        clone_name := CLONE_BASE || '_' || i::STRING;\n\n        EXECUTE IMMEDIATE\n              'CREATE OR REPLACE DATABASE ' || IDENTIFIER(clone_name)\n           || ' CLONE ' || IDENTIFIER(SOURCE_DB);\n\n        i := i + 1;\n    END WHILE;\n\n    -- Corrected return string to include the underscore and range properly\n    RETURN 'Created ' || N_CLONES || ' clones of ' || SOURCE_DB\n           || ' named ' || CLONE_BASE || '_1 .. ' || CLONE_BASE || '_' || N_CLONES;\nEND;\n$$;",
+      "error": null,
+      "message": "Optimized PROCEDURE DDL successfully validated in DRY_RUN mode. No changes were applied to OPT_LAB_CLONE_3.RETAIL.SP_CLONE_DB."
+    }
+  ],
+  "status": "SUCCESS",
+  "timestamp": "2026-07-11T18:45:00Z"
+}
