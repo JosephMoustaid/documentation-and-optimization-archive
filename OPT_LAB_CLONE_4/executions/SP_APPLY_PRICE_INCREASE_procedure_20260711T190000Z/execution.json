@@ -1,0 +1,29 @@
+{
+  "execution_id": "exec-2026-07-11T19:00:00Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "DRY_RUN",
+  "total_objects": 1,
+  "successful_executions": 0,
+  "failed_executions": 1,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "RETAIL.SP_APPLY_PRICE_INCREASE",
+      "object_type": "PROCEDURE",
+      "previous_definition": null,
+      "status": "FAILED",
+      "execution_time_ms": null,
+      "executed_sql": "CREATE OR REPLACE PROCEDURE RETAIL.SP_APPLY_PRICE_INCREASE(\n    cat VARCHAR,\n    pct NUMBER\n)\nRETURNS STRING\nLANGUAGE SQL\nAS\n$$\nDECLARE\n    v_rows_affected NUMBER;\nBEGIN\n    -- Set-based update instead of cursor loop\n    UPDATE products\n       SET unit_price = ROUND(unit_price * (1 + :pct / 100.0), 2)\n     WHERE category = :cat;\n\n    -- ROWCOUNT returns number of rows affected by the last DML statement\n    v_rows_affected := SQLROWCOUNT;\n\n    RETURN 'Raised price on ' || v_rows_affected || ' products (set-based, optimized).';\nEND;\n$$;",
+      "error": "SQL validation failed in DRY_RUN mode: Unable to run the CREATE PROCEDURE command because no database was specified for schema RETAIL. A fully qualified procedure name or explicit database context is required.",
+      "message": "Validation FAILED. The optimized PROCEDURE DDL could not be validated because RETAIL was referenced without an active database context. Please use a fully qualified name (e.g., CREATE OR REPLACE PROCEDURE OPT_LAB_CLONE_4.RETAIL.SP_APPLY_PRICE_INCREASE ...) or ensure the correct database is set before execution, then re-run."
+    }
+  ],
+  "status": "FAILED",
+  "timestamp": "2026-07-11T19:00:00Z",
+  "metadata": {
+    "database": "OPT_LAB_CLONE_4",
+    "schema": "ALL",
+    "warehouse": "ADF_WH",
+    "status": "SUCCESS"
+  }
+}
