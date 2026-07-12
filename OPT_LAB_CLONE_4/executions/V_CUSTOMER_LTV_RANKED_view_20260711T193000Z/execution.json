@@ -1,0 +1,29 @@
+{
+  "execution_id": "exec-2026-07-11T19:30:00Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "DRY_RUN",
+  "total_objects": 1,
+  "successful_executions": 0,
+  "failed_executions": 0,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_4.RETAIL.V_CUSTOMER_LTV_RANKED",
+      "object_type": "VIEW",
+      "previous_definition": "create or replace view V_CUSTOMER_LTV_RANKED(\n\tCUSTOMER_ID,\n\tFIRST_NAME,\n\tLAST_NAME,\n\tLIFETIME_VALUE,\n\tLTV_RANK\n) as\nSELECT\n    c.customer_id,\n    c.first_name,\n    c.last_name,\n    c.lifetime_value,\n    (SELECT COUNT(*)\n       FROM customers c2\n      WHERE c2.lifetime_value > c.lifetime_value) + 1  AS ltv_rank\nFROM customers c;",
+      "status": "VALIDATED",
+      "execution_time_ms": null,
+      "executed_sql": "CREATE OR REPLACE VIEW OPT_LAB_CLONE_4.RETAIL.V_CUSTOMER_LTV_RANKED AS\nSELECT\n    c.customer_id,\n    c.first_name,\n    c.last_name,\n    c.lifetime_value,\n    DENSE_RANK() OVER (ORDER BY c.lifetime_value DESC) AS ltv_rank\nFROM OPT_LAB_CLONE_4.RETAIL.customers c;",
+      "error": null,
+      "message": "Optimized VIEW DDL successfully validated via EXPLAIN in DRY_RUN mode. No changes were applied to OPT_LAB_CLONE_4.RETAIL.V_CUSTOMER_LTV_RANKED."
+    }
+  ],
+  "status": "SUCCESS",
+  "timestamp": "2026-07-11T19:30:00Z",
+  "metadata": {
+    "database": "OPT_LAB_CLONE_4",
+    "schema": "ALL",
+    "warehouse": "ADF_WH",
+    "status": "SUCCESS"
+  }
+}
