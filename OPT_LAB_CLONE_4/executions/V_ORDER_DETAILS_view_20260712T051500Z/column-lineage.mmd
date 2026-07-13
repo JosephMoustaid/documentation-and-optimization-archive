@@ -1,0 +1,57 @@
+%% Mermaid diagram for column lineage (best-effort)
+flowchart TB
+  subgraph ORDERS
+    o_order_id[order_id]
+    o_order_date[order_date]
+    o_status[status]
+  end
+
+  subgraph CUSTOMERS
+    c_customer_id[customer_id]
+    c_first_name[first_name]
+    c_last_name[last_name]
+    c_email[email]
+    c_phone[phone (INVALID)]
+    c_created_at[created_at (LIKELY INVALID)]
+    c_status[status (LIKELY INVALID)]
+  end
+
+  subgraph ORDER_ITEMS
+    oi_product_id[product_id]
+    oi_quantity[quantity]
+    oi_unit_price[unit_price]
+  end
+
+  subgraph PRODUCTS
+    p_product_name[product_name]
+    p_category[category]
+  end
+
+  subgraph PAYMENTS
+    pay_amount[amount]
+    pay_method[method]
+    pay_status[status]
+  end
+
+  v_order_id[V_ORDER_DETAILS.order_id] --> o_order_id
+  v_order_date[V_ORDER_DETAILS.order_date] --> o_order_date
+  v_status[V_ORDER_DETAILS.status] --> o_status
+
+  v_customer_id[V_ORDER_DETAILS.customer_id] --> c_customer_id
+  v_first_name[V_ORDER_DETAILS.first_name] --> c_first_name
+  v_last_name[V_ORDER_DETAILS.last_name] --> c_last_name
+  v_email[V_ORDER_DETAILS.email] --> c_email
+  v_phone[V_ORDER_DETAILS.phone] --> c_phone
+  v_created_at[V_ORDER_DETAILS.created_at] --> c_created_at
+  v_customer_status[V_ORDER_DETAILS.customer_status] --> c_status
+
+  v_product_id[V_ORDER_DETAILS.product_id] --> oi_product_id
+  v_quantity[V_ORDER_DETAILS.quantity] --> oi_quantity
+  v_unit_price[V_ORDER_DETAILS.unit_price] --> oi_unit_price
+
+  v_product_name[V_ORDER_DETAILS.product_name] --> p_product_name
+  v_category[V_ORDER_DETAILS.category] --> p_category
+
+  v_payment_amount[V_ORDER_DETAILS.payment_amount] --> pay_amount
+  v_payment_method[V_ORDER_DETAILS.payment_method] --> pay_method
+  v_payment_status[V_ORDER_DETAILS.payment_status] --> pay_status
