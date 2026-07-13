@@ -1,14 +1,11 @@
-# Lineage — V_CUSTOMER_ORDER_SUMMARY
+# Lineage — OPT_LAB_CLONE_4.RETAIL.V_CUSTOMER_ORDER_SUMMARY
 
-## Object-level lineage
+## Sources
+- `OPT_LAB_CLONE_4.RETAIL.customers` (base table)
+- `OPT_LAB_CLONE_4.RETAIL.orders` (base table; aggregated by `customer_id`)
 
-**Target view:** `OPT_LAB_CLONE_4.RETAIL.V_CUSTOMER_ORDER_SUMMARY`
+## Transform
+- `customers` LEFT JOIN aggregated `orders` per `customer_id`.
 
-**Upstream sources:**
-
-- `OPT_LAB_CLONE_4.RETAIL.customers` (driving table)
-- `OPT_LAB_CLONE_4.RETAIL.orders` (aggregated by `customer_id`)
-
-## Join pattern
-
-- `customers` LEFT JOIN aggregated `orders` on `customer_id`.
+## Output
+- View: `OPT_LAB_CLONE_4.RETAIL.V_CUSTOMER_ORDER_SUMMARY`
