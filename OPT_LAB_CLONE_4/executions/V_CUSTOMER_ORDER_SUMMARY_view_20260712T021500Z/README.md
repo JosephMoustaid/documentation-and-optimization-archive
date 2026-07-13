@@ -1,14 +1,17 @@
-# OPT_LAB_CLONE_4.RETAIL.V_CUSTOMER_ORDER_SUMMARY (view)
+# V_CUSTOMER_ORDER_SUMMARY (view)
 
-Execution folder: `V_CUSTOMER_ORDER_SUMMARY_view_20260712T021500Z`
+This folder contains the optimization artifacts and documentation for:
 
-## Artifacts
+- **Object:** `OPT_LAB_CLONE_4.RETAIL.V_CUSTOMER_ORDER_SUMMARY`
+- **Execution:** `exec-2026-07-13T02:15:00Z`
+- **Payload timestamp:** `2026-07-12T02:15:00Z`
+
+## Files
 - `previous.sql` — definition before optimization
-- `optimized.sql` — applied/optimized definition
+- `optimized.sql` — definition applied
 - `execution.json` — execution payload snapshot
-- `optimization-report.md` — change notes and rationale
-- `schema.md` — inferred output schema (from view column list)
+- `summary.md` — high-level summary
+- `schema.md` — inferred shape of inputs/outputs
 - `lineage.md` — object-level lineage
 - `column-lineage.md` — column-level lineage
-- `summary.md` — short summary
-
+- `optimization-report.md` — detailed optimization notes
