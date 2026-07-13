@@ -1,0 +1,27 @@
+{
+  "execution_id": "exec-2026-07-11T19:45:00Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "total_objects": 1,
+  "successful_executions": 1,
+  "failed_executions": 0,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_4.RETAIL.V_DAILY_SALES",
+      "object_type": "VIEW",
+      "previous_definition": "create or replace view V_DAILY_SALES(\n\tORDER_DATE,\n\tDAILY_TOTAL,\n\tRUNNING_TOTAL\n) as\nSELECT\n    d1.order_date,\n    SUM(d1.order_total)                                AS daily_total,\n    (SELECT SUM(d2.order_total)\n       FROM orders d2\n      WHERE d2.order_date <= d1.order_date)            AS running_total\nFROM orders d1\nGROUP BY d1.order_date;",
+      "status": "SUCCESS",
+      "execution_time_ms": null,
+      "executed_sql": "CREATE OR REPLACE VIEW OPT_LAB_CLONE_4.RETAIL.V_DAILY_SALES AS\nSELECT\n    d1.order_date,\n    SUM(d1.order_total) AS daily_total,\n    SUM(SUM(d1.order_total)) OVER (\n        ORDER BY d1.order_date\n        ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW\n    ) AS running_total\nFROM OPT_LAB_CLONE_4.RETAIL.orders AS d1\nGROUP BY\n    d1.order_date",
+      "error": null,
+      "message": "Optimized VIEW applied successfully. OPT_LAB_CLONE_4.RETAIL.V_DAILY_SALES now uses a window function for the running total over aggregated daily sales."
+    }
+  ],
+  "status": "SUCCESS",
+  "timestamp": "2026-07-11T19:45:00Z",
+  "derived_metadata": {
+    "database": "OPT_LAB_CLONE_4",
+    "schema": "RETAIL"
+  }
+}
