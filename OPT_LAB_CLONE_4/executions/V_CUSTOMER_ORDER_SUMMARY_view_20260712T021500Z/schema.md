@@ -1,17 +1,10 @@
-# Schema / Dependencies — V_CUSTOMER_ORDER_SUMMARY
+# Schema — OPT_LAB_CLONE_4.RETAIL.V_CUSTOMER_ORDER_SUMMARY
 
-## Referenced objects
+Inferred from the view column list and SELECT aliases.
 
-- `OPT_LAB_CLONE_4.RETAIL.customers`
-- `OPT_LAB_CLONE_4.RETAIL.orders`
-
-## Output columns
-
-| Column | Type | Notes |
-|---|---|---|
-| CUSTOMER_ID | (unknown) | From `customers.customer_id` |
-| NUM_ORDERS | (unknown) | `COUNT(*)` per customer, default 0 |
-| TOTAL_SPENT | (unknown) | `SUM(order_total)` per customer, default 0 |
-| LAST_ORDER | (unknown) | `MAX(order_date)` per customer |
-
-> Types are not introspected in this execution; treat as best-effort documentation.
+| Column | Notes |
+|---|---|
+| CUSTOMER_ID | From `customers.customer_id` |
+| NUM_ORDERS | `COALESCE(o_agg.num_orders, 0)` |
+| TOTAL_SPENT | `COALESCE(o_agg.total_spent, 0)` |
+| LAST_ORDER | `o_agg.last_order` (`MAX(order_date)`) |
