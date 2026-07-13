@@ -1,21 +1,31 @@
-# Optimization Report — OPT_LAB_CLONE_4.RETAIL.V_CUSTOMER_ORDER_SUMMARY
+# Optimization Report — V_CUSTOMER_ORDER_SUMMARY
 
-- **Execution:** exec-2026-07-12T02:15:00Z
-- **Timestamp:** 2026-07-12T02:15:00Z
-- **Warehouse:** ADF_WH
-- **Status:** SUCCESS
+## Context
 
-## Applied change
-- Updated the view definition to ensure `TOTAL_SPENT` returns **0** (via `COALESCE`) when a customer has no orders.
+- **Object:** `OPT_LAB_CLONE_4.RETAIL.V_CUSTOMER_ORDER_SUMMARY`
+- **Type:** VIEW
+- **Execution:** `exec-2026-07-12T02:15:00Z`
+- **Applied:** Yes (mode = APPLY)
+- **Result:** SUCCESS
 
-## Behavioral impact
-- **Before:** `TOTAL_SPENT` was `NULL` for customers with zero orders.
-- **After:** `TOTAL_SPENT` is `0` for customers with zero orders.
-- `NUM_ORDERS` already defaulted to `0`.
-- `LAST_ORDER` remains `NULL` when no orders exist.
+## Before
 
-## Performance notes
-- The view uses a single aggregated pass over `orders` grouped by `customer_id` joined to `customers`.
+- View already used a single aggregated subquery over `orders` joined to `customers`.
+- `num_orders` defaulted to 0 via `COALESCE`.
+- `total_spent` remained `NULL` when no orders.
 
-## Applied SQL
-See `optimized.sql`.
+## After
+
+- Retained single aggregated `LEFT JOIN` pattern.
+- Set `total_spent` default to 0: `COALESCE(o_agg.total_spent, 0)`.
+- Left `last_order` as nullable to distinguish customers with no orders.
+
+## Semantic note
+
+Changing `total_spent` from NULL → 0 for customers with no orders may affect consumers that treat NULL as “no data”. If NULL is required, revert to `o_agg.total_spent`.
+
+## SQL artifacts
+
+See:
+- `previous.sql`
+- `optimized.sql`

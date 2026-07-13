@@ -1,15 +1,14 @@
-# Lineage (Object-level) — V_CUSTOMER_ORDER_SUMMARY
+# Lineage — V_CUSTOMER_ORDER_SUMMARY
 
-- **Target:** `OPT_LAB_CLONE_4.RETAIL.V_CUSTOMER_ORDER_SUMMARY`
-- **Sources:**
-  - `OPT_LAB_CLONE_4.RETAIL.customers` (base rows)
-  - `OPT_LAB_CLONE_4.RETAIL.orders` (aggregated per `customer_id`)
+## Object-level lineage
 
-## Relationship
-- `customers` **LEFT JOIN** aggregated `orders` on `customer_id`.
+**Target view:** `OPT_LAB_CLONE_4.RETAIL.V_CUSTOMER_ORDER_SUMMARY`
 
-```mermaid
-flowchart LR
-  C[(RETAIL.customers)] -->|customer_id| V["V_CUSTOMER_ORDER_SUMMARY"]
-  O[(RETAIL.orders)] -->|GROUP BY customer_id| V
-```
+**Upstream sources:**
+
+- `OPT_LAB_CLONE_4.RETAIL.customers` (driving table)
+- `OPT_LAB_CLONE_4.RETAIL.orders` (aggregated by `customer_id`)
+
+## Join pattern
+
+- `customers` LEFT JOIN aggregated `orders` on `customer_id`.

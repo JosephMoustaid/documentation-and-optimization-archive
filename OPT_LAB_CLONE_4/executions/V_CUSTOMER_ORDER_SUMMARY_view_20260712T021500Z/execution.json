@@ -25,5 +25,9 @@
     "schema": "ALL",
     "warehouse": "ADF_WH",
     "status": "SUCCESS"
+  },
+  "user_context": {
+    "x-user-id": "55220bc3-23a9-4dff-88d2-6d6e515ca418",
+    "x-user-email": "youssef.moustaid@ibm.com"
   }
 }
