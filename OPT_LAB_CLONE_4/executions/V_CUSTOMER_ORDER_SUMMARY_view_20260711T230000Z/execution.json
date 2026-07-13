@@ -1,0 +1,23 @@
+{
+  "execution_id": "exec-2026-07-11T23:00:00Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "total_objects": 1,
+  "successful_executions": 0,
+  "failed_executions": 1,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_4.RETAIL.V_CUSTOMER_ORDER_SUMMARY",
+      "object_type": "VIEW",
+      "previous_definition": "create or replace view V_CUSTOMER_ORDER_SUMMARY(\n\tCUSTOMER_ID,\n\tNUM_ORDERS,\n\tTOTAL_SPENT,\n\tLAST_ORDER\n) as\nSELECT\n    c.customer_id,                         -- Explicit customer identifier\n    COALESCE(o_agg.num_orders, 0) AS num_orders,\n    o_agg.total_spent,                    -- NULL when no orders\n    o_agg.last_order                      -- NULL when no orders\nFROM OPT_LAB_CLONE_4.RETAIL.customers AS c\nLEFT JOIN (\n    -- Single aggregation over orders instead of three correlated subqueries\n    SELECT\n        o.customer_id,\n        COUNT(*)           AS num_orders,   -- Previously COUNT(*) scalar subquery\n        SUM(o.order_total) AS total_spent,  -- Previously SUM(order_total) scalar subquery\n        MAX(o.order_date)  AS last_order    -- Previously MAX(order_date) scalar subquery\n    FROM OPT_LAB_CLONE_4.RETAIL.orders AS o\n    GROUP BY o.customer_id                 -- One grouped pass over orders\n) AS o_agg\n    ON o_agg.customer_id = c.customer_id;",
+      "status": "FAILED",
+      "execution_time_ms": null,
+      "executed_sql": "CREATE OR REPLACE VIEW OPT_LAB_CLONE_4.RETAIL.V_CUSTOMER_ORDER_SUMMARY AS\nSELECT\n    c.customer_id,\n    c.customer_name,\n    c.email,\n    -- Add any other customer columns explicitly as needed instead of `c.*`\n    COUNT(o.order_id)               AS num_orders,         -- Replaces correlated COUNT() subquery\n    SUM(o.order_total)             AS total_spent,        -- Replaces correlated SUM(order_total) subquery\n    MAX(o.order_date)              AS last_order          -- Replaces correlated MAX(order_date) subquery\nFROM OPT_LAB_CLONE_4.RETAIL.customers AS c\nLEFT JOIN OPT_LAB_CLONE_4.RETAIL.orders    AS o\n    ON o.customer_id = c.customer_id       -- Single join instead of three correlated subqueries\nGROUP BY\n    c.customer_id,\n    c.customer_name,\n    c.email;",
+      "error": "SQL compilation error: error line 4 at position 4 invalid identifier 'C.CUSTOMER_NAME'",
+      "message": "Execution FAILED in APPLY mode. The optimized VIEW definition references one or more customer columns (for example C.CUSTOMER_NAME) that do not exist in OPT_LAB_CLONE_4.RETAIL.CUSTOMERS. Update the SELECT and GROUP BY lists to use only valid columns from the CUSTOMERS table (e.g., CUSTOMER_ID, FIRST_NAME, LAST_NAME, EMAIL, etc.), then re-run the optimization."
+    }
+  ],
+  "status": "FAILED",
+  "timestamp": "2026-07-11T23:00:00Z"
+}
