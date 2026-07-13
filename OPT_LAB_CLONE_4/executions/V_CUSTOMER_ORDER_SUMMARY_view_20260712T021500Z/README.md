@@ -1,18 +1,14 @@
-# OPT_LAB_CLONE_4.RETAIL.V_CUSTOMER_ORDER_SUMMARY (VIEW)
+# OPT_LAB_CLONE_4.RETAIL.V_CUSTOMER_ORDER_SUMMARY (view)
 
-- **Execution ID:** exec-2026-07-12T02:15:00Z
-- **Timestamp:** 2026-07-12T02:15:00Z
-- **Warehouse:** ADF_WH
-- **Mode:** APPLY
-- **Status:** SUCCESS
+Execution folder: `V_CUSTOMER_ORDER_SUMMARY_view_20260712T021500Z`
 
-## Files
-
-- `summary.md` — high-level outcome
-- `optimization-report.md` — optimization details and rationale
-- `previous.sql` — original definition
-- `optimized.sql` — applied definition
-- `schema.md` — referenced objects (best-effort)
+## Artifacts
+- `previous.sql` — definition before optimization
+- `optimized.sql` — applied/optimized definition
+- `execution.json` — execution payload snapshot
+- `optimization-report.md` — change notes and rationale
+- `schema.md` — inferred output schema (from view column list)
 - `lineage.md` — object-level lineage
 - `column-lineage.md` — column-level lineage
-- `execution.json` — raw execution payload
+- `summary.md` — short summary
+
