@@ -1,3 +1,3 @@
 # Procedure flow
 
-_Not applicable._ This execution optimized a **view**, not a stored procedure.
+_Not applicable: this execution optimized a **view**, not a stored procedure._
