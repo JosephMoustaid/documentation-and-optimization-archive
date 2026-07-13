@@ -1,0 +1,23 @@
+{
+  "execution_id": "exec-2026-07-11T23:30:00Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "total_objects": 1,
+  "successful_executions": 0,
+  "failed_executions": 1,
+  "status": "FAILED",
+  "timestamp": "2026-07-11T23:30:00Z",
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_4.RETAIL.V_NEVER_ORDERED_PRODUCTS",
+      "object_type": "VIEW",
+      "status": "FAILED",
+      "execution_time_ms": null,
+      "previous_definition": "create or replace view V_NEVER_ORDERED_PRODUCTS(\n\tPRODUCT_ID,\n\tPRODUCT_NAME,\n\tCATEGORY,\n\tUNIT_PRICE,\n\tACTIVE_FLAG\n) as\nSELECT\n    p.*\nFROM OPT_LAB_CLONE_4.RETAIL.products AS p\nWHERE NOT EXISTS (\n    SELECT 1\n    FROM OPT_LAB_CLONE_4.RETAIL.order_items AS oi\n    WHERE oi.product_id = p.product_id\n);",
+      "executed_sql": "CREATE OR REPLACE VIEW OPT_LAB_CLONE_4.RETAIL.V_NEVER_ORDERED_PRODUCTS AS\nSELECT\n    p.product_id,\n    p.product_name,\n    p.category_id,\n    p.price,\n    p.status\n    -- Add or remove columns as appropriate for OPT_LAB_CLONE_4.RETAIL.PRODUCTS\nFROM OPT_LAB_CLONE_4.RETAIL.products AS p\nWHERE NOT EXISTS (\n    SELECT 1\n    FROM OPT_LAB_CLONE_4.RETAIL.order_items AS oi\n    WHERE oi.product_id = p.product_id\n);",
+      "error": "SQL compilation error: error line 5 at position 4 invalid identifier 'P.CATEGORY_ID'",
+      "message": "Execution FAILED in APPLY mode. The optimized VIEW definition references one or more product columns (for example P.CATEGORY_ID, P.PRICE, P.STATUS) that do not exist in OPT_LAB_CLONE_4.RETAIL.PRODUCTS. Adjust the SELECT list to use only valid columns from the PRODUCTS table (e.g., PRODUCT_ID, PRODUCT_NAME, CATEGORY, UNIT_PRICE, ACTIVE_FLAG) and re-run the optimization."
+    }
+  ]
+}
