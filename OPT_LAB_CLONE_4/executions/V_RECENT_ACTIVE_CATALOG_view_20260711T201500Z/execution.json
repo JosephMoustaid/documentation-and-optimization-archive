@@ -1,0 +1,23 @@
+{
+  "execution_id": "exec-2026-07-11T20:15:00Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "total_objects": 1,
+  "successful_executions": 1,
+  "failed_executions": 0,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_4.RETAIL.V_RECENT_ACTIVE_CATALOG",
+      "object_type": "VIEW",
+      "previous_definition": "create or replace view V_RECENT_ACTIVE_CATALOG(\n\tPRODUCT_ID,\n\tPRODUCT_NAME,\n\tCATEGORY,\n\tUNIT_PRICE\n) as\nSELECT\n    p.product_id,\n    p.product_name,\n    p.category,\n    p.unit_price\nFROM products p\nJOIN inventory i ON i.product_id = p.product_id\nWHERE UPPER(p.category) = 'ELECTRONICS'                -- function on column\n  AND YEAR(i.last_restocked) = YEAR(CURRENT_DATE)      -- function on column\n  AND p.active_flag = TRUE;",
+      "status": "SUCCESS",
+      "execution_time_ms": null,
+      "executed_sql": "CREATE OR REPLACE VIEW OPT_LAB_CLONE_4.RETAIL.V_RECENT_ACTIVE_CATALOG AS\nSELECT\n    p.product_id,\n    p.product_name,\n    p.category,\n    p.unit_price\nFROM OPT_LAB_CLONE_4.RETAIL.products AS p\nJOIN OPT_LAB_CLONE_4.RETAIL.inventory AS i\n    ON i.product_id = p.product_id\nWHERE\n    -- Case-insensitive match without applying a function on the column\n    p.category ILIKE 'electronics'\n    -- Restrict to rows with last_restocked in the current calendar year\n    AND i.last_restocked >= DATE_FROM_PARTS(YEAR(CURRENT_DATE), 1, 1)\n    AND i.last_restocked <  DATE_FROM_PARTS(YEAR(CURRENT_DATE) + 1, 1, 1)\n    -- Preserve active_flag filter\n    AND p.active_flag = TRUE",
+      "error": null,
+      "message": "Optimized VIEW applied successfully. OPT_LAB_CLONE_4.RETAIL.V_RECENT_ACTIVE_CATALOG now uses fully qualified tables and SARGable predicates for category and last_restocked."
+    }
+  ],
+  "status": "SUCCESS",
+  "timestamp": "2026-07-11T20:15:00Z"
+}
