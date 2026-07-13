@@ -1,11 +1,10 @@
-# Lineage — OPT_LAB_CLONE_4.RETAIL.V_CUSTOMER_ORDER_SUMMARY
+# Lineage
 
-## Sources
-- `OPT_LAB_CLONE_4.RETAIL.customers` (base table)
-- `OPT_LAB_CLONE_4.RETAIL.orders` (base table; aggregated by `customer_id`)
+## Object lineage
 
-## Transform
-- `customers` LEFT JOIN aggregated `orders` per `customer_id`.
+`OPT_LAB_CLONE_4.RETAIL.V_CUSTOMER_ORDER_SUMMARY`
+- depends on `OPT_LAB_CLONE_4.RETAIL.customers`
+- depends on `OPT_LAB_CLONE_4.RETAIL.orders`
 
-## Output
-- View: `OPT_LAB_CLONE_4.RETAIL.V_CUSTOMER_ORDER_SUMMARY`
+## Join + aggregation
+- `customers` LEFT JOIN aggregated `orders` grouped by `orders.customer_id`
