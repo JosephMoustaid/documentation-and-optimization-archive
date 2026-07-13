@@ -1,3 +1,3 @@
-# Procedure Flow
+# Procedure flow
 
-Not applicable. The optimized object is a VIEW (`OPT_LAB_CLONE_4.RETAIL.V_CUSTOMER_ORDER_SUMMARY`).
+_Not applicable._ This execution optimized a **view**, not a stored procedure.
