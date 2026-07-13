@@ -1,0 +1,29 @@
+{
+  "execution_id": "exec-2026-07-12T00:15:00Z",
+  "warehouse": "ADF_WH",
+  "execution_mode": "APPLY",
+  "total_objects": 1,
+  "successful_executions": 0,
+  "failed_executions": 1,
+  "execution_results": [
+    {
+      "task_id": "opt-1",
+      "object_urn": "OPT_LAB_CLONE_4.RETAIL.V_DAILY_SALES",
+      "object_type": "VIEW",
+      "previous_definition": "create or replace view V_DAILY_SALES(\n\tORDER_DATE,\n\tDAILY_TOTAL,\n\tRUNNING_TOTAL\n) as\nSELECT\n    o.order_date,\n    SUM(o.order_total)                                                      AS daily_total,\n    SUM(SUM(o.order_total)) OVER (\n        ORDER BY o.order_date\n        ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW\n    )                                                                       AS running_total\nFROM OPT_LAB_CLONE_4.RETAIL.orders AS o\nGROUP BY\n    o.order_date;",
+      "status": "FAILED",
+      "execution_time_ms": null,
+      "executed_sql": "CREATE OR REPLACE VIEW OPT_LAB_CLONE_4.RETAIL.V_DAILY_SALES AS\nSELECT\n    d1.order_date,\n    SUM(d1.order_total) AS daily_total,\n    SUM(d1.order_total) OVER (\n        ORDER BY d1.order_date\n        ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW\n    ) AS running_total\nFROM OPT_LAB_CLONE_4.RETAIL.orders AS d1\nGROUP BY d1.order_date;",
+      "error": "SQL compilation error: [D1.ORDER_TOTAL] is not a valid group by expression",
+      "message": "Execution FAILED in APPLY mode. The optimized VIEW definition uses a window function directly on the base column D1.ORDER_TOTAL while also aggregating with SUM(D1.ORDER_TOTAL) and grouping only by D1.ORDER_DATE. To be valid, the window function should be applied over the aggregated daily_total (e.g., SUM(d1.order_total) OVER (...) in a subquery) rather than over the raw column in the same grouped query. Please adjust the definition accordingly (for example, aggregate in a subquery and then apply the window function) and re-run the update."
+    }
+  ],
+  "status": "FAILED",
+  "timestamp": "2026-07-12T00:15:00Z",
+  "metadata": {
+    "database": "OPT_LAB_CLONE_4",
+    "schema": "ALL",
+    "warehouse": "ADF_WH",
+    "status": "SUCCESS"
+  }
+}
