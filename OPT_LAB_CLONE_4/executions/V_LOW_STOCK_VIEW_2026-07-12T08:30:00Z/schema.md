@@ -1,12 +1,24 @@
-# Schema
+# Schema — OPT_LAB_CLONE_4.RETAIL.V_LOW_STOCK (VIEW)
 
-## Object
-- **Database**: `OPT_LAB_CLONE_4`
-- **Schema**: `RETAIL`
-- **Name**: `V_LOW_STOCK`
-- **Type**: `VIEW`
+**Database:** `OPT_LAB_CLONE_4`  
+**Schema:** `RETAIL`  
+**Object:** `V_LOW_STOCK`  
+**Type:** `VIEW`
+
+## Columns
+
+| Column | Type | Source | Notes |
+|---|---|---|---|
+| INVENTORY_ID | (inferred) | `inventory.inventory_id` | From inventory table |
+| WAREHOUSE_CODE | (inferred) | `inventory.warehouse_code` | From inventory table |
+| PRODUCT_ID | (inferred) | `inventory.product_id` | From inventory table |
+| QTY_ON_HAND | (inferred) | `inventory.qty_on_hand` | Used for low-stock predicate |
+| REORDER_LEVEL | (inferred) | `inventory.reorder_level` | Used for low-stock predicate |
+| PRODUCT_NAME | (inferred) | `products.product_name` | Joined via `product_id` |
+| SUPPLIER_NAME | (inferred) | `suppliers.supplier_name` | Joined via `supplier_id` |
 
 ## Definition (applied)
+
 ```sql
 CREATE OR REPLACE VIEW OPT_LAB_CLONE_4.RETAIL.V_LOW_STOCK AS
 /*
@@ -33,23 +45,26 @@ LEFT JOIN OPT_LAB_CLONE_4.RETAIL.suppliers AS s
 WHERE i.qty_on_hand < i.reorder_level;
 ```
 
-## Output columns
-| Ordinal | Column | Source expression |
-|---:|---|---|
-| 1 | `INVENTORY_ID` | `i.inventory_id` |
-| 2 | `WAREHOUSE_CODE` | `i.warehouse_code` |
-| 3 | `PRODUCT_ID` | `i.product_id` |
-| 4 | `QTY_ON_HAND` | `i.qty_on_hand` |
-| 5 | `REORDER_LEVEL` | `i.reorder_level` |
-| 6 | `PRODUCT_NAME` | `p.product_name` |
-| 7 | `SUPPLIER_NAME` | `s.supplier_name` |
+## Previous definition (for reference)
 
-## Referenced relations
-- `OPT_LAB_CLONE_4.RETAIL.INVENTORY` (alias `i`)
-- `OPT_LAB_CLONE_4.RETAIL.PRODUCTS` (alias `p`)
-- `OPT_LAB_CLONE_4.RETAIL.SUPPLIERS` (alias `s`)
-
-## Join + filter logic
-- `i LEFT JOIN p ON p.product_id = i.product_id`
-- `i LEFT JOIN s ON s.supplier_id = i.supplier_id`
-- Filter: `i.qty_on_hand < i.reorder_level`
+```sql
+create or replace view V_LOW_STOCK(
+	INVENTORY_ID,
+	WAREHOUSE_CODE,
+	PRODUCT_ID,
+	QTY_ON_HAND,
+	REORDER_LEVEL,
+	PRODUCT_NAME,
+	SUPPLIER_NAME
+) as
+SELECT
+ i.inventory_id,
+ i.warehouse_code,
+ i.product_id,
+ i.qty_on_hand,
+ i.reorder_level,
+ (SELECT p.product_name FROM products p WHERE p.product_id = i.product_id) AS product_name,
+ (SELECT s.supplier_name FROM suppliers s WHERE s.supplier_id = i.supplier_id) AS supplier_name
+FROM inventory i
+WHERE i.qty_on_hand < i.reorder_level;
+```
