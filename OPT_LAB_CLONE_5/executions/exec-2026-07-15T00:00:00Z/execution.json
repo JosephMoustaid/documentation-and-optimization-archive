@@ -1,1 +1,41 @@
-{"database":"OPT_LAB_CLONE_5","object":{"type":"VIEW","schema":"RETAIL","name":"V_CUSTOMER_ORDER_SUMMARY","definition":"CREATE OR REPLACE VIEW OPT_LAB_CLONE_5.RETAIL.V_CUSTOMER_ORDER_SUMMARY AS\nSELECT\n    c.*,\n    (SELECT COUNT(*)      FROM orders o WHERE o.customer_id = c.customer_id) AS num_orders,\n    (SELECT SUM(order_total) FROM orders o WHERE o.customer_id = c.customer_id) AS total_spent,\n    (SELECT MAX(order_date)  FROM orders o WHERE o.customer_id = c.customer_id) AS last_order\nFROM customers c;","usage_metrics":{"total_executions":0,"avg_elapsed_time_ms":null,"avg_bytes_scanned":null},"priority_score":0.5,"priority_tier":"MEDIUM"},"object_urn":"OPT_LAB_CLONE_5.RETAIL.V_CUSTOMER_ORDER_SUMMARY","object_type":"VIEW","execution_result":{"execution_id":"exec-2026-07-15T00:00:00Z","warehouse":"ADF_WH","execution_mode":"APPLY","total_objects":1,"successful_executions":0,"failed_executions":1,"execution_results":[{"task_id":"opt-1","object_urn":"OPT_LAB_CLONE_5.RETAIL.V_CUSTOMER_ORDER_SUMMARY","object_type":"VIEW","previous_definition":"create or replace view V_CUSTOMER_ORDER_SUMMARY(\n\tCUSTOMER_ID,\n\tFIRST_NAME,\n\tLAST_NAME,\n\tEMAIL,\n\tCOUNTRY,\n\tSIGNUP_DATE,\n\tIS_ACTIVE,\n\tLIFETIME_VALUE,\n\tNUM_ORDERS,\n\tTOTAL_SPENT,\n\tLAST_ORDER\n) as\nSELECT\n    c.*,\n    (SELECT COUNT(*)      FROM orders o WHERE o.customer_id = c.customer_id) AS num_orders,\n    (SELECT SUM(order_total) FROM orders o WHERE o.customer_id = c.customer_id) AS total_spent,\n    (SELECT MAX(order_date)  FROM orders o WHERE o.customer_id = c.customer_id) AS last_order\nFROM customers c;","status":"FAILED","execution_time_ms":null,"executed_sql":"CREATE OR REPLACE VIEW OPT_LAB_CLONE_5.RETAIL.V_CUSTOMER_ORDER_SUMMARY AS\nSELECT\n    c.*,\n    COUNT(o.order_id) AS num_orders,\n    SUM(o.order_total) AS total_spent,\n    MAX(o.order_date) AS last_order\nFROM retail.customers c\nLEFT JOIN retail.orders o\n    ON o.customer_id = c.customer_id\nGROUP BY\n    c.*","error":"MCP Server tool error: SQL compilation error:\nsyntax error line 11 at position 6 unexpected '*'.\nrequest-id: 6b475f56-4be0-4742-9a5b-0bd14d231ead","message":"Execution failed for optimized definition; original view definition remains in place."}],"status":"FAILED","timestamp":"2026-07-15T00:00:00Z"}}
+{
+  "database": "OPT_LAB_CLONE_5",
+  "object": {
+    "type": "PROCEDURE",
+    "schema": "RETAIL",
+    "name": "SP_RECALC_ORDER_TOTALS",
+    "definition": "\nDECLARE\n    c CURSOR FOR SELECT order_id FROM orders;\n    n NUMBER DEFAULT 0;\nBEGIN\n    FOR rec IN c DO\n        LET oid NUMBER := rec.order_id;\n        UPDATE orders\n           SET order_total = (\n                SELECT COALESCE(SUM(quantity * unit_price), 0)\n                FROM order_items\n                WHERE order_id = :oid)\n         WHERE order_id = :oid;\n        n := n + 1;\n    END FOR;\n    RETURN 'Recalculated ' || n || ' order totals (the slow way).';\nEND;\n",
+    "usage_metrics": {
+      "total_executions": 0,
+      "avg_elapsed_time_ms": null,
+      "avg_bytes_scanned": null
+    },
+    "priority_score": 0.5,
+    "priority_tier": "MEDIUM"
+  },
+  "object_urn": "OPT_LAB_CLONE_5.RETAIL.SP_RECALC_ORDER_TOTALS",
+  "object_type": "PROCEDURE",
+  "execution_result": {
+    "execution_id": "exec-2026-07-15T00:00:00Z",
+    "warehouse": "ADF_WH",
+    "execution_mode": "APPLY",
+    "total_objects": 1,
+    "successful_executions": 0,
+    "failed_executions": 1,
+    "execution_results": [
+      {
+        "task_id": "opt-2",
+        "object_urn": "OPT_LAB_CLONE_5.RETAIL.SP_RECALC_ORDER_TOTALS",
+        "object_type": "PROCEDURE",
+        "previous_definition": null,
+        "status": "FAILED",
+        "execution_time_ms": null,
+        "executed_sql": "CREATE OR REPLACE PROCEDURE RETAIL.SP_RECALC_ORDER_TOTALS()\nRETURNS VARCHAR\nLANGUAGE SQL\nAS\n$$\nDECLARE\n    v_rows_processed NUMBER := 0;\nBEGIN\n    MERGE INTO orders o\n    USING (\n        SELECT\n            oi.order_id,\n            COALESCE(SUM(oi.quantity * oi.unit_price), 0) AS order_total\n        FROM order_items oi\n        GROUP BY oi.order_id\n    ) s\n    ON o.order_id = s.order_id\n    WHEN MATCHED THEN\n        UPDATE SET o.order_total = s.order_total;\n\n    v_rows_processed := SQLROWCOUNT;\n\n    RETURN 'Recalculated ' || v_rows_processed || ' order totals (the slow way).';\nEND;\n$$",
+        "error": "Unable to run the CREATE PROCEDURE command. You must specify the database to use by either setting the database field in the body of the request or by setting the DEFAULT_NAMESPACE property for the current user.",
+        "message": "APPLY execution failed: target database not set; procedure was not created or replaced."
+      }
+    ],
+    "status": "FAILED",
+    "timestamp": "2026-07-15T00:00:00Z"
+  }
+}

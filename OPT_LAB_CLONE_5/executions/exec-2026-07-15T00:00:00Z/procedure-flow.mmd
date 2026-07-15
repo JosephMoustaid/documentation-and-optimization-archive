@@ -1,0 +1,7 @@
+flowchart TD
+  Start([Start]) --> Read[Read]
+  Read --> Validate[Validate]
+  Validate --> Transform[Transform]
+  Transform --> Merge[Merge]
+  Merge --> Commit[Commit]
+  Commit --> End([End])

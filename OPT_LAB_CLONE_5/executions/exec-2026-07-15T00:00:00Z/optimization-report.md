@@ -1,54 +1,52 @@
 # Optimization Report
 
-## Object
+## Target
 
-- **URN:** OPT_LAB_CLONE_5.RETAIL.V_CUSTOMER_ORDER_SUMMARY
-- **Type:** VIEW
+- **Object URN:** `OPT_LAB_CLONE_5.RETAIL.SP_RECALC_ORDER_TOTALS`
+- **Object Type:** `PROCEDURE`
 
-## Previous Definition
+## Status
 
-```sql
-create or replace view V_CUSTOMER_ORDER_SUMMARY(
-	CUSTOMER_ID,
-	FIRST_NAME,
-	LAST_NAME,
-	EMAIL,
-	COUNTRY,
-	SIGNUP_DATE,
-	IS_ACTIVE,
-	LIFETIME_VALUE,
-	NUM_ORDERS,
-	TOTAL_SPENT,
-	LAST_ORDER
-) as
-SELECT
-    c.*,
-    (SELECT COUNT(*)      FROM orders o WHERE o.customer_id = c.customer_id) AS num_orders,
-    (SELECT SUM(order_total) FROM orders o WHERE o.customer_id = c.customer_id) AS total_spent,
-    (SELECT MAX(order_date)  FROM orders o WHERE o.customer_id = c.customer_id) AS last_order
-FROM customers c;
-```
+- **Execution Status:** `FAILED`
 
-## Optimized Attempt (Executed SQL)
+## Applied/Attempted Change
+
+The run attempted to execute the following SQL (preserved byte-for-byte):
 
 ```sql
-CREATE OR REPLACE VIEW OPT_LAB_CLONE_5.RETAIL.V_CUSTOMER_ORDER_SUMMARY AS
-SELECT
-    c.*,
-    COUNT(o.order_id) AS num_orders,
-    SUM(o.order_total) AS total_spent,
-    MAX(o.order_date) AS last_order
-FROM retail.customers c
-LEFT JOIN retail.orders o
-    ON o.customer_id = c.customer_id
-GROUP BY
-    c.*
+CREATE OR REPLACE PROCEDURE RETAIL.SP_RECALC_ORDER_TOTALS()
+RETURNS VARCHAR
+LANGUAGE SQL
+AS
+$$
+DECLARE
+    v_rows_processed NUMBER := 0;
+BEGIN
+    MERGE INTO orders o
+    USING (
+        SELECT
+            oi.order_id,
+            COALESCE(SUM(oi.quantity * oi.unit_price), 0) AS order_total
+        FROM order_items oi
+        GROUP BY oi.order_id
+    ) s
+    ON o.order_id = s.order_id
+    WHEN MATCHED THEN
+        UPDATE SET o.order_total = s.order_total;
+
+    v_rows_processed := SQLROWCOUNT;
+
+    RETURN 'Recalculated ' || v_rows_processed || ' order totals (the slow way).';
+END;
+$$
 ```
 
-## Result
+## Failure
 
-- **Status:** FAILED
-- **Error:** MCP Server tool error: SQL compilation error:
-syntax error line 11 at position 6 unexpected '*'.
-request-id: 6b475f56-4be0-4742-9a5b-0bd14d231ead
-- **Message:** Execution failed for optimized definition; original view definition remains in place.
+- **Error:** Unable to run the CREATE PROCEDURE command. You must specify the database to use by either setting the database field in the body of the request or by setting the DEFAULT_NAMESPACE property for the current user.
+- **Message:** APPLY execution failed: target database not set; procedure was not created or replaced.
+
+## Notes
+
+- This archive captures the attempted optimized SQL and execution metadata.
+- No schema/lineage artifacts are produced for procedures beyond `procedure-flow.mmd`.
