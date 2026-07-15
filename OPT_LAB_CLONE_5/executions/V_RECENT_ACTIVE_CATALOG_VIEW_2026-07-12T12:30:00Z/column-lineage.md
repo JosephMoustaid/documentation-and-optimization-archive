@@ -1,20 +1,22 @@
-# Column Lineage: OPT_LAB_CLONE_5.RETAIL.V_RECENT_ACTIVE_CATALOG
+# Column Lineage
 
-## Column Mapping
+## Column mappings
+| View column | Source expression | Source table.column | Transformation |
+|---|---|---|---|
+| `product_id` | `p.product_id` | `OPT_LAB_CLONE_5.RETAIL.PRODUCTS.product_id` | None |
+| `product_name` | `p.product_name` | `OPT_LAB_CLONE_5.RETAIL.PRODUCTS.product_name` | None |
+| `category` | `p.category` | `OPT_LAB_CLONE_5.RETAIL.PRODUCTS.category` | None (filtered with `COLLATE "en-ci"` in WHERE) |
+| `unit_price` | `p.unit_price` | `OPT_LAB_CLONE_5.RETAIL.PRODUCTS.unit_price` | None |
 
-| Output Column | Source Column(s) | Transformation |
+## Predicate lineage (filters)
+| Predicate | Column(s) referenced | Purpose |
 |---|---|---|
-| PRODUCT_ID | PRODUCTS.PRODUCT_ID | Direct projection (`p.product_id`) |
-| PRODUCT_NAME | PRODUCTS.PRODUCT_NAME | Direct projection (`p.product_name`) |
-| CATEGORY | PRODUCTS.CATEGORY | Direct projection (`p.category`); filtered with case-insensitive COLLATE (`p.category COLLATE "en-ci" = 'ELECTRONICS'`) |
-| UNIT_PRICE | PRODUCTS.UNIT_PRICE | Direct projection (`p.unit_price`) |
+| `p.category COLLATE "en-ci" = 'ELECTRONICS'` | `PRODUCTS.category` | Case-insensitive category filter without applying a function to the column |
+| `p.active_flag = TRUE` | `PRODUCTS.active_flag` | Only active products |
+| `i.last_restocked >= DATE_FROM_PARTS(YEAR(CURRENT_DATE), 1, 1)` | `INVENTORY.last_restocked` | Start of current year (inclusive) |
+| `i.last_restocked < DATE_FROM_PARTS(YEAR(CURRENT_DATE) + 1, 1, 1)` | `INVENTORY.last_restocked` | Start of next year (exclusive) |
 
-## Filtering / Predicate Lineage
-
-- `PRODUCTS.CATEGORY` participates in the category filter.
-- `INVENTORY.LAST_RESTOCKED` participates in the current-year date-range filter.
-- `PRODUCTS.ACTIVE_FLAG` participates in the active flag filter.
-
-## Join Lineage
-
-- `PRODUCTS.PRODUCT_ID` joins to `INVENTORY.PRODUCT_ID`.
+## Join lineage
+| Join | Left | Right |
+|---|---|---|
+| `i.product_id = p.product_id` | `INVENTORY.product_id` | `PRODUCTS.product_id` |

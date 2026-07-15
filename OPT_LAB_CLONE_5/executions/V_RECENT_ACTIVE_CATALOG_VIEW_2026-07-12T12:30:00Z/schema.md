@@ -1,7 +1,10 @@
-# Schema: OPT_LAB_CLONE_5.RETAIL.V_RECENT_ACTIVE_CATALOG
+# Schema Documentation
 
-## View Definition (Applied)
+## Object
+- **URN:** `OPT_LAB_CLONE_5.RETAIL.V_RECENT_ACTIVE_CATALOG`
+- **Type:** VIEW
 
+## Definition (current)
 ```sql
 CREATE OR REPLACE VIEW OPT_LAB_CLONE_5.RETAIL.V_RECENT_ACTIVE_CATALOG AS
 /*
@@ -34,16 +37,25 @@ WHERE p.category COLLATE "en-ci" = 'ELECTRONICS'
   AND p.active_flag = TRUE
 ```
 
-## Output Columns
-
-| Column | Source | Expression |
+## Output columns
+| Column | Source | Notes |
 |---|---|---|
-| PRODUCT_ID | OPT_LAB_CLONE_5.RETAIL.PRODUCTS | `p.product_id` |
-| PRODUCT_NAME | OPT_LAB_CLONE_5.RETAIL.PRODUCTS | `p.product_name` |
-| CATEGORY | OPT_LAB_CLONE_5.RETAIL.PRODUCTS | `p.category` |
-| UNIT_PRICE | OPT_LAB_CLONE_5.RETAIL.PRODUCTS | `p.unit_price` |
+| `product_id` | `PRODUCTS.product_id` | Selected from PRODUCTS |
+| `product_name` | `PRODUCTS.product_name` | Selected from PRODUCTS |
+| `category` | `PRODUCTS.category` | Filtered case-insensitively to `ELECTRONICS` |
+| `unit_price` | `PRODUCTS.unit_price` | Selected from PRODUCTS |
 
-## Referenced Objects
+## Referenced objects
+| Object | Alias | Join/Filter usage |
+|---|---:|---|
+| `OPT_LAB_CLONE_5.RETAIL.PRODUCTS` | `p` | Join key `p.product_id`; filters `p.category`, `p.active_flag` |
+| `OPT_LAB_CLONE_5.RETAIL.INVENTORY` | `i` | Join key `i.product_id`; filter on `i.last_restocked` date range |
 
-- OPT_LAB_CLONE_5.RETAIL.PRODUCTS (alias: `p`)
-- OPT_LAB_CLONE_5.RETAIL.INVENTORY (alias: `i`)
+## Join conditions
+- `i.product_id = p.product_id`
+
+## Filter conditions
+- `p.category COLLATE "en-ci" = 'ELECTRONICS'`
+- `i.last_restocked >= DATE_FROM_PARTS(YEAR(CURRENT_DATE), 1, 1)`
+- `i.last_restocked <  DATE_FROM_PARTS(YEAR(CURRENT_DATE) + 1, 1, 1)`
+- `p.active_flag = TRUE`

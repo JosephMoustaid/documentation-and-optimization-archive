@@ -1,17 +1,20 @@
-# Lineage: OPT_LAB_CLONE_5.RETAIL.V_RECENT_ACTIVE_CATALOG
+# Data Lineage
 
-## Object-Level Lineage
-
+## Object lineage (high-level)
 ```mermaid
-graph TD
-  PRODUCTS[OPT_LAB_CLONE_5.RETAIL.PRODUCTS] --> VIEW[OPT_LAB_CLONE_5.RETAIL.V_RECENT_ACTIVE_CATALOG]
-  INVENTORY[OPT_LAB_CLONE_5.RETAIL.INVENTORY] --> VIEW[OPT_LAB_CLONE_5.RETAIL.V_RECENT_ACTIVE_CATALOG]
+flowchart LR
+  subgraph OPT_LAB_CLONE_5.RETAIL
+    P[PRODUCTS]
+    I[INVENTORY]
+    V[V_RECENT_ACTIVE_CATALOG (VIEW)]
+  end
+
+  P -->|JOIN on product_id| V
+  I -->|JOIN on product_id + filter last_restocked current year| V
 ```
 
 ## Notes
-
-- Join condition: `i.product_id = p.product_id`
-- Filters:
-  - `p.category COLLATE "en-ci" = 'ELECTRONICS'`
-  - `i.last_restocked` constrained to the current year via a half-open range
-  - `p.active_flag = TRUE`
+- The view returns product attributes from `PRODUCTS` for items that are:
+  - in category `ELECTRONICS` (case-insensitive collation comparison)
+  - active (`active_flag = TRUE`)
+  - have inventory rows with `last_restocked` within the current calendar year

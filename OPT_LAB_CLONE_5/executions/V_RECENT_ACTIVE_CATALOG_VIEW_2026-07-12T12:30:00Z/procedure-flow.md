@@ -1,48 +1,19 @@
-# Procedure Flow: Optimization Apply for OPT_LAB_CLONE_5.RETAIL.V_RECENT_ACTIVE_CATALOG
+# Procedure / Flow
+
+Although this is a VIEW (not a stored procedure), the logical execution can be represented as a flow.
 
 ```mermaid
 flowchart TD
-  A[Start: exec-2026-07-12T12:30:00Z] --> B[Load previous view definition]
-  B --> C[Rewrite predicates to be SARGable]
-  C --> D[Fully qualify table references]
-  D --> E[Apply CREATE OR REPLACE VIEW]
-  E --> F{Execution Status}
-  F -->|SUCCESS| G[Persist documentation artifacts]
-  F -->|FAILURE| H[Capture error and stop]
-  G --> I[End]
-  H --> I[End]
+  A[Start: Query V_RECENT_ACTIVE_CATALOG] --> B[Read PRODUCTS as p]
+  B --> C[Filter p.active_flag = TRUE]
+  C --> D[Filter p.category COLLATE "en-ci" = 'ELECTRONICS']
+  D --> E[Read INVENTORY as i]
+  E --> F[Filter i.last_restocked in current year (half-open range)]
+  F --> G[Join i to p on product_id]
+  G --> H[Project columns: product_id, product_name, category, unit_price]
+  H --> I[Return result set]
 ```
 
-## Applied SQL
-
-```sql
-CREATE OR REPLACE VIEW OPT_LAB_CLONE_5.RETAIL.V_RECENT_ACTIVE_CATALOG AS
-/*
-  Optimized "recent active catalog" view
-
-  Optimizations:
-  1) Fully qualified table names (OPT_LAB_CLONE_5.RETAIL.PRODUCTS and
-     OPT_LAB_CLONE_5.RETAIL.INVENTORY) to avoid search-path ambiguity and
-     aid the optimizer.
-  2) Rewrote UPPER(p.category) = 'ELECTRONICS' as a case-insensitive
-     comparison using COLLATE ... CASE_INSENSITIVE, which preserves
-     semantics while allowing index/partition pruning on CATEGORY when
-     applicable by avoiding a function on the column.
-  3) Replaced YEAR(i.last_restocked) = YEAR(CURRENT_DATE) with a
-     half-open date-range predicate on LAST_RESTOCKED for the current
-     year, avoiding a function on the column and enabling better
-     partition pruning and sargable access.
-*/
-SELECT
-    p.product_id,
-    p.product_name,
-    p.category,
-    p.unit_price
-FROM OPT_LAB_CLONE_5.RETAIL.PRODUCTS AS p
-JOIN OPT_LAB_CLONE_5.RETAIL.INVENTORY AS i
-    ON i.product_id = p.product_id
-WHERE p.category COLLATE "en-ci" = 'ELECTRONICS'
-  AND i.last_restocked >= DATE_FROM_PARTS(YEAR(CURRENT_DATE), 1, 1)
-  AND i.last_restocked <  DATE_FROM_PARTS(YEAR(CURRENT_DATE) + 1, 1, 1)
-  AND p.active_flag = TRUE
-```
+## Execution semantics
+- Filters on `PRODUCTS` and `INVENTORY` are applied before/around the join as chosen by the optimizer.
+- The date-range predicate is sargable and is typically more amenable to partition pruning than `YEAR(last_restocked) = YEAR(CURRENT_DATE)`.
